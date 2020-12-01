@@ -1,0 +1,6 @@
+framework module Pods_CalendarBudget {
+  umbrella header "Pods-CalendarBudget-umbrella.h"
+
+  export *
+  module * { export * }
+}

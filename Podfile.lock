@@ -1,0 +1,20 @@
+PODS:
+  - HorizonCalendar (1.6.1)
+  - SnapKit (5.0.1)
+
+DEPENDENCIES:
+  - HorizonCalendar
+  - SnapKit (~> 5.0.0)
+
+SPEC REPOS:
+  trunk:
+    - HorizonCalendar
+    - SnapKit
+
+SPEC CHECKSUMS:
+  HorizonCalendar: c9a10657d07196f0b555e8f8b5a1dc1619bd256b
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+
+PODFILE CHECKSUM: 094508530677fa8c848dcb2d6059d3cf601b5338
+
+COCOAPODS: 1.10.0
