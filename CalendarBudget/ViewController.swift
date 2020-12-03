@@ -15,11 +15,16 @@ struct DayLabel: CalendarItemViewRepresentable {
     let font: UIFont
     let textColor: UIColor
     let backgroundColor: UIColor
+    let borderWidth: CGFloat
+    let borderColor: CGColor
+    
+//    let masksToBounds: Bool
   }
 
   //Properties that will vary depending on the particular date being displayed.
   struct ViewModel: Equatable {
     let day: Day
+//    let month: Month
   }
 
   static func makeView(
@@ -31,7 +36,10 @@ struct DayLabel: CalendarItemViewRepresentable {
     label.backgroundColor = invariantViewProperties.backgroundColor
     label.font = invariantViewProperties.font
     label.textColor = invariantViewProperties.textColor
-
+    label.layer.borderWidth = invariantViewProperties.borderWidth
+    label.layer.borderColor = invariantViewProperties.borderColor
+//    label.layer.masksToBounds = invariantViewProperties.masksToBounds
+        
     label.textAlignment = .center
     label.clipsToBounds = true
     label.layer.cornerRadius = 12
@@ -40,11 +48,15 @@ struct DayLabel: CalendarItemViewRepresentable {
   }
 
   static func setViewModel(_ viewModel: ViewModel, on view: UILabel) {
-    view.text = "\(viewModel.day)"
+    view.text = "\(viewModel.day.day)"
+//    view.layer.borderColor = UIColor.black.cgColor
+//    view.layer.masksToBounds = true
+//    print(view.text!)
 //    let dayText = "\(viewModel.day)"
   }
 
 }
+
 final class DayRangeIndicatorView: UIView {
 
   private let indicatorColor: UIColor
@@ -91,6 +103,29 @@ final class DayRangeIndicatorView: UIView {
 
 }
 
+extension DayRangeIndicatorView: CalendarItemViewRepresentable {
+
+  struct InvariantViewProperties: Hashable {
+    let indicatorColor : UIColor
+  }
+
+  struct ViewModel: Equatable {
+    let framesOfDaysToHighlight: [CGRect]
+  }
+
+  static func makeView(
+    withInvariantViewProperties invariantViewProperties: InvariantViewProperties)
+    -> DayRangeIndicatorView
+  {
+    DayRangeIndicatorView(indicatorColor: invariantViewProperties.indicatorColor)
+  }
+
+  static func setViewModel(_ viewModel: ViewModel, on view: DayRangeIndicatorView) {
+    view.framesOfDaysToHighlight = viewModel.framesOfDaysToHighlight
+  }
+
+}
+
 
 
 class ViewController: UIViewController {
@@ -109,6 +144,19 @@ class ViewController: UIViewController {
         visibleDateRange: startDate...endDate,
         monthsLayout: .vertical(options: VerticalMonthsLayoutOptions()))
 //        monthsLayout: .horizontal(monthWidth: 300)
+        .withDayItemModelProvider { day in
+              CalendarItemModel<DayLabel>(
+                invariantViewProperties: .init(
+                  font: UIFont.systemFont(ofSize: 18),
+                  textColor: .darkGray,
+                  backgroundColor: .clear,
+                    borderWidth: 1.0,
+                    borderColor: UIColor.black.cgColor),
+                viewModel: .init(day: day))
+            }
+        .withInterMonthSpacing(24)
+        .withVerticalDayMargin(8)
+        .withHorizontalDayMargin(8)
         .withDayRangeItemModelProvider(for: [dateRangeToHighlight]) { dayRangeLayoutContext in
               CalendarItemModel<DayRangeIndicatorView>(
                 invariantViewProperties: .init(indicatorColor: UIColor.blue.withAlphaComponent(0.15)),
@@ -121,6 +169,7 @@ class ViewController: UIViewController {
         let calendarView = CalendarView(initialContent: makeContent())
         view.addSubview(calendarView)
         calendarView.translatesAutoresizingMaskIntoConstraints = false
+        
 
         NSLayoutConstraint.activate([
           calendarView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
