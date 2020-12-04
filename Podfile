@@ -7,6 +7,6 @@ target 'CalendarBudget' do
 
   # Pods for CalendarBudget
 pod 'SnapKit', '~> 5.0.0'
-pod 'HorizonCalendar'
+pod 'FSCalendar'
 
 end
