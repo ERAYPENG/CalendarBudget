@@ -9,11 +9,23 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
+    var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+//        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let view1 = ViewController()
+//        let mainView = ViewController(nibName: "ViewController", bundle: nil) //ViewController = Name of your controller
+//        nav1.viewControllers = [mainView]
+        let nav = UINavigationController(rootViewController: view1)
+        self.window?.rootViewController = nav
+//        self.window?.makeKeyAndVisible()
+        
+        
+        
+        
         return true
     }
 

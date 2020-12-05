@@ -18,6 +18,16 @@ class ViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
         navBar.backgroundColor = .gray
         view.addSubview(navBar)
+        navBar.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview()
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
+        }
+        let settingButton = UIBarButtonItem.init(barButtonSystemItem: .camera, target: self, action: #selector(self.action(sender:)))
+        self.navigationItem.rightBarButtonItem = settingButton
+               
+        
         
         
         let calendar = FSCalendar(frame: CGRect(x: 0, y: 0, width: self.view.frame.maxX, height: 300))
@@ -53,5 +63,12 @@ class ViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         formatter.dateFormat = "dd-MMM-yyy"
         print("\(formatter.string(from: date))")
+        let v1 = selectDateView()
+        self.present(v1, animated: true) {
+            print("success")
+        }
+    }
+    @objc func action(sender: UIBarButtonItem) {
+        print("button settled")
     }
 }
