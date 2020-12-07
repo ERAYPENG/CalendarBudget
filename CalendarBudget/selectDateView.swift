@@ -10,20 +10,23 @@ import UIKit
 class selectDateView: UIViewController {
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .groupTableViewBackground
         super.viewDidLoad()
-//        let finishLabel = UILabel()
         let finishButton = UIButton()
-//        finishLabel.text = "Finish"
-//        finishLabel.font = UIFont(name: "MarkerFelt-Thin", size: 45)
-//        finishLabel.textColor = .blue
-//        finishLabel.textAlignment = .center
-//        finishLabel.frame = CGRect(x: 15, y: 54, width: 300, height: 500)
-        finishButton.setTitle("Finish", for: .normal)
+        finishButton.setTitle("DONE", for: .normal)
+        finishButton.titleLabel?.font = .systemFont(ofSize: 14)
         finishButton.setTitleColor(.blue, for: .normal)
+        finishButton.backgroundColor = .groupTableViewBackground
         finishButton.frame = CGRect(x: 1.0, y: 1.0, width: 300.0, height: 500.0)
         finishButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
         self.view.addSubview(finishButton)
+        
+        finishButton.snp.makeConstraints { (make) in
+            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalToSuperview().offset(-10)
+            make.width.height.equalTo(100)
+        }
+        
         
 //        finish.setTitle("Finish", for: .selected)
         
