@@ -12,33 +12,14 @@ class selectDateView: UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = .groupTableViewBackground
         super.viewDidLoad()
-        let finishButton = UIButton()
-        finishButton.setTitle("DONE", for: .normal)
-        finishButton.titleLabel?.font = .systemFont(ofSize: 14)
-        finishButton.setTitleColor(.blue, for: .normal)
-        finishButton.backgroundColor = .groupTableViewBackground
-        finishButton.frame = CGRect(x: 1.0, y: 1.0, width: 300.0, height: 500.0)
-        finishButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
-        self.view.addSubview(finishButton)
-        
-        finishButton.snp.makeConstraints { (make) in
-            make.trailing.equalToSuperview().offset(-10)
-            make.top.equalToSuperview().offset(-10)
-            make.width.height.equalTo(100)
-        }
+        self.setUpUI()
         
         
-//        finish.setTitle("Finish", for: .selected)
+                
+    
         
 
-        // Do any additional setup after loading the view.
-    }
     
-    
-    
-    @objc func dismiss(_ sender:UIButton){
-        self.dismiss(animated: true, completion: nil)
-    }
     /*
     // MARK: - Navigation
 
@@ -49,4 +30,28 @@ class selectDateView: UIViewController {
     }
     */
 
+    }
+}
+
+extension selectDateView{
+    private func setUpUI(){
+        let finishButton = UIButton()
+        finishButton.setTitle("DONE", for: .normal)
+        finishButton.titleLabel?.font = .systemFont(ofSize: 14)
+        finishButton.setTitleColor(.blue, for: .normal)
+        finishButton.backgroundColor = .groupTableViewBackground
+        finishButton.frame = CGRect(x: 1.0, y: 1.0, width: 300.0, height: 500.0)
+        finishButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
+        self.view.addSubview(finishButton)
+        finishButton.snp.makeConstraints { (make) in
+            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalToSuperview().offset(-10)
+            make.width.height.equalTo(100)
+        }
+    }
+}
+extension selectDateView{
+    @objc func dismiss(_ sender:UIButton){
+        self.dismiss(animated: true, completion: nil)
+    }
 }

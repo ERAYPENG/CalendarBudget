@@ -41,6 +41,9 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         view.addSubview(calendar)
                 self.calendar = calendar
         calendar.translatesAutoresizingMaskIntoConstraints = false
+            }
+    
+    override func viewDidLayoutSubviews() {
         calendar.snp.makeConstraints { (make) in
 
                 make.leading.equalToSuperview()
@@ -48,6 +51,7 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
                 make.trailing.equalToSuperview()
                 make.bottom.equalToSuperview()
         }
+
     }
     
 //    func calendar(_ calendar: FSCalendar, titleFor date: Date) -> String? {
