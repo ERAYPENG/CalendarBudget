@@ -15,8 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let vc = CalendarViewController() //vc 是 CalendarViewController 實體(instance)
+        let vc = CalendarViewController()
         let nav = UINavigationController(rootViewController: vc)
+        nav.navigationBar.barTintColor = .gray
         self.window?.rootViewController = nav
         
         
