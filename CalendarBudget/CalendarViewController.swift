@@ -12,9 +12,46 @@ import FSPagerView
 
 class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
     
+    
+    
+    
+    
     fileprivate weak var calendar: FSCalendar!
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
+//    fileprivate weak var pagerView: FSPagerView!
+//    fileprivate weak var pageControl: FSPageControl!
+    fileprivate let imageNames = ["noteIcon","budgetIcon"]
+    fileprivate var numberOfItems = 2
+    
+    lazy var pagerView: FSPagerView = {
+        let pagerView = FSPagerView()
+        pagerView.dataSource = self
+        pagerView.delegate = self
+//        pagerView.automaticSlidingInterval = 1
+        pagerView.isInfinite = false
+        pagerView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "Cell")
+//        pagerView.itemSize = FSPagerView.automaticSize
+        pagerView.transformer = FSPagerViewTransformer(type: .ferrisWheel)
+        print("pagerview set")
+        return pagerView
+    }()
+    
+    lazy var pageControl: FSPageControl = {
+        let pageControl = FSPageControl()
+        pageControl.numberOfPages = imageNames.count
+        pageControl.contentHorizontalAlignment = .right
+        pageControl.contentInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        pageControl.currentPage = 1
+        print("pagecontrol set")
+        return pageControl
+    }()
+    
+    lazy var noteTableView: UITableView = {
+        let noteTableView = UITableView()
+        return noteTableView
+    }()
+    
     
     var formatter = DateFormatter()
     
@@ -60,6 +97,21 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         
         
         
+        
+
+        
+        self.view.addSubview(pagerView)
+        self.view.addSubview(pageControl)
+        
+        let addButtonView = UIImage(named: "addButton")
+        let addButton = UIButton()
+        addButton.setImage(addButtonView, for: .normal)
+        view.addSubview(addButton)
+//        let pageControl = FSPageControl()
+//        self.view.addSubview(pageControl)
+        
+        
+
 
       
 
@@ -84,7 +136,22 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
             make.height.equalTo(calendar).dividedBy(2)
             make.width.equalToSuperview()
         }
-    }
+        pagerView.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalToSuperview()
+            make.height.equalTo(200)
+        }
+        pageControl.snp.makeConstraints { (make) in
+            make.width.equalTo(80)
+            make.height.equalTo(30)
+            make.bottom.equalTo(pagerView.snp.bottom).offset(0)
+            make.centerX.equalTo(pagerView)
+        }
+        addButton.snp.makeConstraints { (make) in
+            make.top.equalTo(calendar.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(60)
+        }
+}
     
     
     override func viewDidLayoutSubviews() {
@@ -153,7 +220,64 @@ extension CalendarViewController {
         givenView.layer.addSublayer(shapeLayer)
     }
     
+    
+    
 }
+
+extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
+    //MARK:- FSPagerView Datasource
+    func numberOfItems(in pagerView: FSPagerView) -> Int {
+        return numberOfItems
+    }
+    
+    func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
+        let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "Cell", at: index)
+        cell.imageView?.image = UIImage(named: self.imageNames[index])
+        cell.imageView?.backgroundColor = .clear
+        cell.imageView?.contentMode = .redraw
+        cell.imageView?.clipsToBounds = true
+//        cell.textLabel?.text = index.description+index.description
+        cell.imageView?.snp.makeConstraints({ (make) in
+            make.center.equalToSuperview()
+            make.height.width.equalTo(80)
+        })
+
+        
+        return cell
+    }
+    // MARK:- FSPagerView Delegate
+    func pagerView(_ pagerView: FSPagerView, willDisplay cell: FSPagerViewCell, forItemAt index: Int) {
+        pageControl.currentPage = index
+    }
+    
+    func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
+        pagerView.deselectItem(at: index, animated: true)
+        pagerView.scrollToItem(at: index, animated: true)
+    }
+    
+    func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
+        pageControl.currentPage = targetIndex
+    }
+    
+    
+    func pagerViewDidEndScrollAnimation(_ pagerView: FSPagerView) {
+        pageControl.currentPage = pagerView.currentIndex
+    }
+}
+
+//MARK:- UITableView
+extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        <#code#>
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        <#code#>
+    }
+    
+    
+}
+
 //MARK: Events
 extension CalendarViewController {
     
