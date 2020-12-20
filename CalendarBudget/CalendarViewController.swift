@@ -19,10 +19,10 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     fileprivate weak var calendar: FSCalendar!
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
-//    fileprivate weak var pagerView: FSPagerView!
-//    fileprivate weak var pageControl: FSPageControl!
     fileprivate let imageNames = ["noteIcon","budgetIcon"]
     fileprivate var numberOfItems = 2
+    fileprivate var noteSectionTitle = ["Today","Tomorrow"]
+    fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     
     lazy var pagerView: FSPagerView = {
         let pagerView = FSPagerView()
@@ -49,7 +49,20 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     
     lazy var noteTableView: UITableView = {
         let noteTableView = UITableView()
+        noteTableView.backgroundColor = .groupTableViewBackground
+        noteTableView.dataSource = self
+        noteTableView.delegate = self
+        noteTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CustomNote")
         return noteTableView
+    }()
+    
+    lazy var budgetTableView: UITableView = {
+        let budgetTableView = UITableView()
+        budgetTableView.backgroundColor = .groupTableViewBackground
+        budgetTableView.dataSource = self
+        budgetTableView.delegate = self
+        budgetTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CustomBudget")
+        return budgetTableView
     }()
     
     
@@ -107,16 +120,15 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         let addButton = UIButton()
         addButton.setImage(addButtonView, for: .normal)
         view.addSubview(addButton)
-//        let pageControl = FSPageControl()
-//        self.view.addSubview(pageControl)
-        
+        view.addSubview(noteTableView)
+        view.addSubview(budgetTableView)
         
 
 
       
 
         
-        
+//MARK:- AutoLayout
         calendar.snp.makeConstraints { (make) in
 
             make.leading.equalToSuperview()
@@ -147,9 +159,19 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
             make.centerX.equalTo(pagerView)
         }
         addButton.snp.makeConstraints { (make) in
-            make.top.equalTo(calendar.snp.bottom)
+            make.top.equalTo(calendar.snp.bottom).offset(-10)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(60)
+        }
+        noteTableView.snp.makeConstraints { (make) in
+            make.top.equalTo(yellowBlock.snp.top)
+            make.width.equalToSuperview()
+            make.bottom.equalTo(pagerView.snp.top)
+        }
+        budgetTableView.snp.makeConstraints { (make) in
+            make.top.equalTo(yellowBlock.snp.top)
+            make.width.equalToSuperview()
+            make.bottom.equalTo(pagerView.snp.top)
         }
 }
     
@@ -234,12 +256,24 @@ extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
         let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "Cell", at: index)
         cell.imageView?.image = UIImage(named: self.imageNames[index])
         cell.imageView?.backgroundColor = .clear
-        cell.imageView?.contentMode = .redraw
+        cell.imageView?.contentMode = .scaleAspectFill
         cell.imageView?.clipsToBounds = true
-//        cell.textLabel?.text = index.description+index.description
+        if index == 0{
+            cell.textLabel?.text = "Note"
+        }else if index == 1{
+            cell.textLabel?.text = "Budget"
+        }
+        cell.textLabel?.textColor = .black
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 30)
+        cell.textLabel?.backgroundColor = .clear
+        cell.textLabel?.superview?.backgroundColor = .clear
         cell.imageView?.snp.makeConstraints({ (make) in
             make.center.equalToSuperview()
             make.height.width.equalTo(80)
+        })
+        cell.textLabel?.snp.makeConstraints({ (make) in
+            make.centerX.equalToSuperview()
+            
         })
 
         
@@ -247,13 +281,17 @@ extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
     }
     // MARK:- FSPagerView Delegate
     func pagerView(_ pagerView: FSPagerView, willDisplay cell: FSPagerViewCell, forItemAt index: Int) {
+        
         pageControl.currentPage = index
+      
+        
+
     }
     
-    func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
-        pagerView.deselectItem(at: index, animated: true)
-        pagerView.scrollToItem(at: index, animated: true)
+    func pagerView(_ pagerView: FSPagerView, shouldSelectItemAt index: Int) -> Bool {
+        return false
     }
+    
     
     func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
         pageControl.currentPage = targetIndex
@@ -263,16 +301,47 @@ extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
     func pagerViewDidEndScrollAnimation(_ pagerView: FSPagerView) {
         pageControl.currentPage = pagerView.currentIndex
     }
+    
+    
 }
 
 //MARK:- UITableView
 extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
-    }
     
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        switch tableView {
+        case noteTableView:
+            return noteSectionTitle.count
+        case budgetTableView:
+            return budgetSectionTitle.count
+        default:
+            fatalError("Invalid Table")
+        }
+        
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        if tableView == noteTableView{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
+            cell.textLabel?.text = "testNote"
+            return cell
+        }else if tableView == budgetTableView{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomBudget", for: indexPath)
+            cell.textLabel?.text = "testBudget"
+            return cell
+        }
+        return UITableViewCell()
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if tableView == noteTableView{
+            return noteSectionTitle[section]
+        }else if tableView == budgetTableView{
+            return budgetSectionTitle[section]
+        }
+        return String()
     }
     
     
