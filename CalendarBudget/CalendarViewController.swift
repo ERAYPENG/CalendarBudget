@@ -11,11 +11,6 @@ import SnapKit
 import FSPagerView
 
 class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
-    
-    
-    
-    
-    
     fileprivate weak var calendar: FSCalendar!
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
@@ -23,15 +18,12 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     fileprivate var numberOfItems = 2
     fileprivate var noteSectionTitle = ["Today","Tomorrow"]
     fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
-    
     lazy var pagerView: FSPagerView = {
         let pagerView = FSPagerView()
         pagerView.dataSource = self
         pagerView.delegate = self
-//        pagerView.automaticSlidingInterval = 1
         pagerView.isInfinite = false
         pagerView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "Cell")
-//        pagerView.itemSize = FSPagerView.automaticSize
         pagerView.transformer = FSPagerViewTransformer(type: .ferrisWheel)
         print("pagerview set")
         return pagerView
@@ -63,6 +55,21 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         budgetTableView.delegate = self
         budgetTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CustomBudget")
         return budgetTableView
+    }()
+    
+    let addButtonView = UIImage(named: "addButton")
+    lazy var addNoteButton: UIButton = {
+        let addNoteButton = UIButton()
+        addNoteButton.setImage(addButtonView, for: .normal)
+        addNoteButton.addTarget(self, action: #selector(addNoteEvent), for: .touchUpInside)
+        return addNoteButton
+    }()
+    
+    lazy var addBudgetButton: UIButton = {
+        let addBudgetButton = UIButton()
+        addBudgetButton.setImage(addButtonView, for: .normal)
+        addBudgetButton.addTarget(self, action: #selector(addBudgetEvent), for: .touchUpInside)
+        return addBudgetButton
     }()
     
     
@@ -115,13 +122,12 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         
         self.view.addSubview(pagerView)
         self.view.addSubview(pageControl)
-        
-        let addButtonView = UIImage(named: "addButton")
-        let addButton = UIButton()
-        addButton.setImage(addButtonView, for: .normal)
-        view.addSubview(addButton)
+        view.addSubview(addNoteButton)
+        view.addSubview(addBudgetButton)
         view.addSubview(noteTableView)
         view.addSubview(budgetTableView)
+        budgetTableView.isHidden = true
+        addBudgetButton.isHidden = true
         
 
 
@@ -158,11 +164,17 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
             make.bottom.equalTo(pagerView.snp.bottom).offset(0)
             make.centerX.equalTo(pagerView)
         }
-        addButton.snp.makeConstraints { (make) in
+        addNoteButton.snp.makeConstraints { (make) in
             make.top.equalTo(calendar.snp.bottom).offset(-10)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(60)
         }
+        addBudgetButton.snp.makeConstraints { (make) in
+            make.top.equalTo(calendar.snp.bottom).offset(-10)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(60)
+        }
+
         noteTableView.snp.makeConstraints { (make) in
             make.top.equalTo(yellowBlock.snp.top)
             make.width.equalToSuperview()
@@ -183,10 +195,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         formatter.dateFormat = "dd-MMM-yyy"
         print("\(formatter.string(from: date))")
-        let v1 = selectDateView()
-        self.present(v1, animated: true) {
-            print("success")
-        }
     }
     
     
@@ -223,7 +231,7 @@ extension CalendarViewController {
             arrowPath.addQuadCurve(to: CGPoint(x:0, y:0), controlPoint: CGPoint(x:givenView.bounds.size.width/2, y:givenView.bounds.size.height*curvedPercent-givenView.bounds.size.height))
             arrowPath.addLine(to: CGPoint(x:0, y:0))
             arrowPath.close()
-            UIColor.red.setFill()
+//            UIColor.red.setFill()
             
             return arrowPath
         }
@@ -246,7 +254,7 @@ extension CalendarViewController {
     
 }
 
-extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
+extension CalendarViewController: FSPagerViewDelegate,FSPagerViewDataSource{
     //MARK:- FSPagerView Datasource
     func numberOfItems(in pagerView: FSPagerView) -> Int {
         return numberOfItems
@@ -292,9 +300,25 @@ extension CalendarViewController:FSPagerViewDelegate,FSPagerViewDataSource{
         return false
     }
     
+   
     
     func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
         pageControl.currentPage = targetIndex
+        switch pageControl.currentPage {
+        case 0:
+            noteTableView.isHidden = false
+            addNoteButton.isHidden = false
+            budgetTableView.isHidden = true
+            addBudgetButton.isHidden = true
+            
+        case 1:
+            budgetTableView.isHidden = false
+            addBudgetButton.isHidden = false
+            noteTableView.isHidden = true
+            addNoteButton.isHidden = true
+        default:
+            print("something wrong")
+        }
     }
     
     
@@ -321,16 +345,26 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
         
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        if tableView == noteTableView{
+            return 1
+        }else if tableView == budgetTableView{
+            return 1
+        }
+        return Int()
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == noteTableView{
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
-            cell.textLabel?.text = "testNote"
+
+            cell.textLabel?.text = "Add something..."
+            cell.textLabel?.alpha = 0.3
+            cell.backgroundColor = .groupTableViewBackground
             return cell
         }else if tableView == budgetTableView{
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomBudget", for: indexPath)
-            cell.textLabel?.text = "testBudget"
+            cell.textLabel?.text = "Add something..."
+            cell.textLabel?.alpha = 0.3
+            cell.backgroundColor = .groupTableViewBackground
             return cell
         }
         return UITableViewCell()
@@ -347,7 +381,8 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
     
 }
 
-//MARK: Events
+
+//MARK:- Events
 extension CalendarViewController {
     
 
@@ -357,11 +392,23 @@ extension CalendarViewController {
         self.navigationController?.pushViewController(settingVC, animated: true)
     }
     
+    @objc func addNoteEvent(sender: UIButton){
+        let noteVC = AddNoteEventViewController()
+        let addNoteNav = UINavigationController(rootViewController: noteVC)
+        self.present(addNoteNav, animated: true, completion: nil)
+        
+
+    }
+    @objc func addBudgetEvent(sender: UIButton){
+        let budgetVC = AddBudgetEventViewController()
+        self.present(budgetVC, animated: true, completion: nil)
+    }
+
+    
     @objc func action(sender: UIBarButtonItem) {
         print("button settled")
     }
     
 }
 
-//MARK: TableViewDelegate
 
