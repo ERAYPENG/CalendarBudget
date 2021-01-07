@@ -9,12 +9,26 @@ import UIKit
 import SnapKit
 
 
-
-
 class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate, UITextFieldDelegate {
-    private var repeatValueFromRepeatViewController: String?
+    struct AddNoteEventContent: Codable {
+        var descriptionString: String
+        var dateString: String
+        var timeString: String
+        var repeatValueString: String
+        
+
+        
+        
+    }
+
+    private var repeatValueFromRepeatViewController = "Never"
     var repeatViewControllerRowNumber: Int?
+    func repeatViewControllerUserIndexRow(row: Int) {
+        repeatViewControllerRowNumber = row
+    }
     let userDelault = UserDefaults()
+    var userPickDate: String?
+    var userPickTime: String?
     lazy var descriptionInputTextField: UITextField = {
         let descriptionInputTextField = UITextField()
         descriptionInputTextField.delegate = self
@@ -26,18 +40,52 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         
         return descriptionInputTextField
     }()
+    
     var descriptionUserInputText: String?
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == descriptionInputTextField {
+            descriptionUserInputText = textField.text
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    
     func repeatViewControllerDidSelectRow(title: String) {
         
         repeatValueFromRepeatViewController = title
     }
     
-    func repeatViewControllerUserIndexRow(row: Int) {
-        repeatViewControllerRowNumber = row
-    }
+    let dateFormatter = DateFormatter()
+    let timeFormatter = DateFormatter()
+    
+    
+    lazy var userDatePicker: UIDatePicker = {
+        let userDatePicker = UIDatePicker(frame: CGRect.zero)
+        userDatePicker.datePickerMode = .dateAndTime
+        if #available(iOS 13.4, *) {
+            userDatePicker.preferredDatePickerStyle = .wheels
+        } else {
+            // Fallback on earlier versions
+        }
+        userDatePicker.minuteInterval = 15
+        userDatePicker.date = NSDate() as Date
+        let userDateFormatter = DateFormatter()
+        userDateFormatter.dateFormat = "yyyy-MMM-dd HH:mm"
+        let fromDateTime = userDateFormatter.date(from: "2020-Dec-01 18:00")
+        userDatePicker.minimumDate = fromDateTime
+        let endDateTime = userDateFormatter.date(from: "2024-Dec-01 18:00")
+        userDatePicker.maximumDate = endDateTime
+        userDatePicker.addTarget(self, action: #selector(datePickerChanged), for: .valueChanged)
+        
+        return userDatePicker
+    }()
+    
     
     let addNoteEventTitle = ["Description","Date","Repeat"]
-    let dateLabel: UILabel? = nil
+    
     lazy var addNoteEventTableView: UITableView = {
         let addNoteEventTableView = UITableView()
         addNoteEventTableView.backgroundColor = .groupTableViewBackground
@@ -50,6 +98,8 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        dateFormatter.dateFormat = "yyyy-MMM-dd"
+        timeFormatter.dateFormat = "HH:mm"
         self.view.backgroundColor = .groupTableViewBackground
         let finishButton = UIButton(frame: CGRect.zero)
         finishButton.backgroundColor = .groupTableViewBackground
@@ -71,6 +121,10 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         view.addSubview(finishButton)
         view.addSubview(addNoteEventTableView)
         view.addSubview(saveButton)
+        
+        
+        
+
         
         
         
@@ -104,7 +158,7 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         navigationController?.setNavigationBarHidden(true, animated: animated)
         let repeatRowIndexPath = NSIndexPath(row: 0, section: 2)
         if let cell = addNoteEventTableView.cellForRow(at: repeatRowIndexPath as IndexPath) {
-            if repeatValueFromRepeatViewController == nil {
+            if repeatValueFromRepeatViewController == "Never" {
                 cell.textLabel?.text = "Never"
             } else {
                 cell.textLabel?.text = repeatValueFromRepeatViewController
@@ -128,17 +182,6 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
 }
 //MARK:- UITableView
 extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField == descriptionInputTextField {
-            descriptionUserInputText = textField.text
-        }
-        
-        print(descriptionUserInputText)
-    }
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return true
-    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return addNoteEventTitle.count
@@ -164,9 +207,6 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
         let cell = tableView.dequeueReusableCell(withIdentifier: "addNoteCell", for: indexPath)
         cell.backgroundColor = UIColor(red: 216/255, green: 223/255, blue: 221/255, alpha: 1)
         if indexPath.section == 0{
-            
-
-            
             cell.addSubview(self.descriptionInputTextField)
             
             descriptionInputTextField.snp.makeConstraints { (make) in
@@ -176,34 +216,8 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
                 make.bottom.equalTo(cell.snp.bottom).offset(-5)
             }
         } else if indexPath.section == 1 {
-            let dateLabel = UILabel(frame: CGRect.zero)
-            dateLabel.backgroundColor = .clear
-            dateLabel.textAlignment = .center
-            dateLabel.textColor = .black
-            let userDatePicker = UIDatePicker(frame: CGRect.zero)
-            userDatePicker.datePickerMode = .dateAndTime
-            userDatePicker.minuteInterval = 15
-            userDatePicker.date = NSDate() as Date
-            let userDateFormatter = DateFormatter()
-            userDateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-            let fromDateTime = userDateFormatter.date(from: "2020-12-01 18:00")
-            userDatePicker.minimumDate = fromDateTime
-            let endDateTime = userDateFormatter.date(from: "2024-12-01 18:00")
-            userDatePicker.maximumDate = endDateTime
-            userDatePicker.addTarget(self, action: #selector(datePickerChanged), for: .valueChanged)
             
-//            dateLabel.text = userDateFormatter.string(from: userDatePicker.date)
-            
-            
-
             cell.addSubview(userDatePicker)
-            cell.addSubview(dateLabel)
-            
-            dateLabel.snp.makeConstraints { (make) in
-                make.leading.equalToSuperview().offset(20)
-                make.top.equalTo(cell.snp.top).offset(5)
-                make.bottom.equalTo(cell.snp.bottom).offset(-5)
-            }
             userDatePicker.snp.makeConstraints { (make) in
                 make.leading.equalToSuperview().offset(20)
                 make.top.equalTo(cell.snp.top).offset(5)
@@ -258,8 +272,6 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
     
 }
 
-//MARK:- Send Value From RepeatView
-
 //MARK:- Events
 extension AddNoteEventViewController{
     @objc func noteDismiss(sender: UIButton){
@@ -267,19 +279,73 @@ extension AddNoteEventViewController{
     }
     
     @objc func datePickerChanged(datePicker:UIDatePicker){
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
 
-        let userPickDate = formatter.string(from: datePicker.date)
+        let userPickDate = dateFormatter.string(from: datePicker.date)
+        let userPickTime = timeFormatter.string(from: datePicker.date)
+        self.userPickDate = userPickDate
+        self.userPickTime = userPickTime
     }
     
     @objc func saveEvent(sender: UIButton){
         addNoteEventTableView.reloadData()
-        userDelault.setValue(descriptionUserInputText, forKey: "description text")
-//        print(descriptionUserInputText)
-        print(descriptionUserInputText)
         
-        self.dismiss(animated: true, completion: nil)
+//        print(descriptionUserInputText)
+        
+        if let descriptionUserInputText = descriptionUserInputText {
+            userDelault.setValue(descriptionUserInputText, forKey: "description")
+            print(descriptionUserInputText)
+            if let userPickDate = userPickDate, let userPickTime = userPickTime,  repeatValueFromRepeatViewController != "Never" {
+                    print(userPickDate)
+                    print(userPickTime)
+                    print(repeatValueFromRepeatViewController)
+                let event: [AddNoteEventContent] = [
+                    AddNoteEventContent(descriptionString: descriptionUserInputText, dateString: userPickDate, timeString: userPickTime, repeatValueString: repeatValueFromRepeatViewController)
+                ]
+                UserDefaults.standard.set(try? PropertyListEncoder().encode(event), forKey: "newEvent")
+                    self.dismiss(animated: true, completion: nil)
+            } else if userPickDate == nil, repeatValueFromRepeatViewController != "Never" {
+                let userPickDefaultDate = dateFormatter.string(from: userDatePicker.date)
+                let userPickDefaultTime = timeFormatter.string(from: userDatePicker.date)
+                print(userPickDefaultDate)
+                print(userPickDefaultTime)
+                print(repeatValueFromRepeatViewController)
+                let event: [AddNoteEventContent] = [
+                    AddNoteEventContent(descriptionString: descriptionUserInputText, dateString: userPickDefaultDate, timeString: userPickDefaultTime, repeatValueString: repeatValueFromRepeatViewController)
+                ]
+                UserDefaults.standard.set(try? PropertyListEncoder().encode(event), forKey: "newEvent")
+                self.dismiss(animated: true, completion: nil)
+            } else if let userPickDate = userPickDate, let userPickTime = userPickTime, repeatValueFromRepeatViewController == "Never" {
+                print(userPickDate)
+                print(userPickTime)
+                print(repeatValueFromRepeatViewController)
+                let event = AddNoteEventContent(descriptionString: descriptionUserInputText, dateString: userPickDate, timeString: userPickTime, repeatValueString: repeatValueFromRepeatViewController)
+                userDelault.setValue(event, forKey: "newEvent")
+                self.dismiss(animated: true, completion: nil)
+            } else if userPickDate == nil && repeatValueFromRepeatViewController == "Never" {
+                let userPickDefaultDate = dateFormatter.string(from: userDatePicker.date)
+                let userPickDefaultTime = timeFormatter.string(from: userDatePicker.date)
+                print(userPickDefaultDate)
+                print(userPickDefaultTime)
+                print(repeatValueFromRepeatViewController)
+                let event: [AddNoteEventContent] = [
+                    AddNoteEventContent(descriptionString: descriptionUserInputText, dateString: userPickDefaultDate, timeString: userPickDefaultTime, repeatValueString: repeatValueFromRepeatViewController)
+                ]
+                UserDefaults.standard.set(try? PropertyListEncoder().encode(event), forKey: "newEvent")
+                self.dismiss(animated: true, completion: nil)
+            }
+        } else if descriptionUserInputText == nil {
+            let addEventAlart = UIAlertController(title: "Oops!", message: "Enter something in Description", preferredStyle: .alert)
+            let okAction = UIAlertAction(
+                title: "OK", style: .default, handler: nil
+            )
+            addEventAlart.addAction(okAction)
+            self.present(addEventAlart, animated: true, completion: nil)
+            
+        }
+        
+        
+        
     }
     
 

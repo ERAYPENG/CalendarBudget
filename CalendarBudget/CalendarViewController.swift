@@ -11,13 +11,23 @@ import SnapKit
 import FSPagerView
 
 class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
+    lazy var eventLabel: UILabel = {
+        let eventLabel = UILabel()
+        return eventLabel
+    }()
+    
     fileprivate weak var calendar: FSCalendar!
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
     fileprivate let imageNames = ["noteIcon","budgetIcon"]
     fileprivate var numberOfItems = 2
-    fileprivate var noteSectionTitle = ["Today","Tomorrow"]
     fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
+    fileprivate var addEventDescription: String?
+    fileprivate var addEventDate: String?
+    fileprivate var addEventTime: String?
+    fileprivate var addEventRepeatValue: String?
+    let dateFormatter = DateFormatter()
+    let timeFormatter = DateFormatter()
     lazy var pagerView: FSPagerView = {
         let pagerView = FSPagerView()
         pagerView.dataSource = self
@@ -73,7 +83,7 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     }()
     
     
-    var formatter = DateFormatter()
+//    var formatter = DateFormatter()
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -130,8 +140,22 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         addBudgetButton.isHidden = true
         
 
-
-      
+//        if let addEventContent = UserDefaults.standard.value(forKey: "description") as? String {
+//            addEventDescription = addEventContent
+//        }
+//
+//        if let addEventDateContent = UserDefaults.standard.value(forKey: "date") as? String {
+//            addEventDate = addEventDateContent
+//        }
+//
+//        if let addEventTimeContent = UserDefaults.standard.value(forKey: "time") as? String {
+//            addEventTime = addEventTimeContent
+//        }
+//
+//        if let addEventRepeatValueContent = UserDefaults.standard.value(forKey: "repeatValue") as? String {
+//            addEventRepeatValue = addEventRepeatValueContent
+//        }
+        
 
         
 //MARK:- AutoLayout
@@ -193,8 +217,12 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        formatter.dateFormat = "dd-MMM-yyy"
-        print("\(formatter.string(from: date))")
+        dateFormatter.dateFormat = "yyyy-MMM-dd"
+//        let calenderUserPickDate = dateFormatter.string(from: date)
+//        if calenderUserPickDate == addEventDate {
+//
+//        }
+        print("\(dateFormatter.string(from: date))")
     }
     
     
@@ -336,7 +364,7 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
     func numberOfSections(in tableView: UITableView) -> Int {
         switch tableView {
         case noteTableView:
-            return noteSectionTitle.count
+            return 1
         case budgetTableView:
             return budgetSectionTitle.count
         default:
@@ -371,7 +399,7 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if tableView == noteTableView{
-            return noteSectionTitle[section]
+            return "To do"
         }else if tableView == budgetTableView{
             return budgetSectionTitle[section]
         }
