@@ -1,26 +1,31 @@
 //
-//  CalendarViewController.swift
+//  MainViewController.swift
 //  CalendarBudget
 //
 //  Created by ERAY on 2020/12/1.
 //
 
 import UIKit
-import FSCalendar
 import SnapKit
 import FSPagerView
 
-class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDelegate {
+class MainViewController: UIViewController {
+    lazy var noteContent = [AddNoteEventContent]()
+    var calendarVC: UIViewController!
+//    let calendarVC = CalendarViewController()
+//    var calendarVC: UIViewCself.view.addSubview(calendarView)ontroller!
     lazy var eventLabel: UILabel = {
         let eventLabel = UILabel()
         return eventLabel
     }()
     
-    fileprivate weak var calendar: FSCalendar!
+    var dateStringFromCalendarVC: String?
+
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
     fileprivate let imageNames = ["noteIcon","budgetIcon"]
     fileprivate var numberOfItems = 2
+    fileprivate var noteSectionTitle = ["To do"]
     fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     fileprivate var addEventDescription: String?
     fileprivate var addEventDate: String?
@@ -35,7 +40,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         pagerView.isInfinite = false
         pagerView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "Cell")
         pagerView.transformer = FSPagerViewTransformer(type: .ferrisWheel)
-        print("pagerview set")
         return pagerView
     }()
     
@@ -45,7 +49,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         pageControl.contentHorizontalAlignment = .right
         pageControl.contentInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         pageControl.currentPage = 1
-        print("pagecontrol set")
         return pageControl
     }()
     
@@ -54,7 +57,8 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         noteTableView.backgroundColor = .groupTableViewBackground
         noteTableView.dataSource = self
         noteTableView.delegate = self
-        noteTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CustomNote")
+        noteTableView.register(NoteEventTableViewCell.self, forCellReuseIdentifier: NoteEventTableViewCell.identifier)
+        noteTableView.register(TestCell.self, forCellReuseIdentifier: TestCell.identifier)
         return noteTableView
     }()
     
@@ -82,7 +86,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         return addBudgetButton
     }()
     
-    
 //    var formatter = DateFormatter()
     
     
@@ -95,32 +98,13 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         super.viewDidLoad()
         print("calendar vc did load")
         self.setupUI()
-        
-        let calendar = FSCalendar(frame: CGRect(x: 0, y: 0, width: self.view.frame.maxX, height: 300))
-        calendar.dataSource = self
-        calendar.delegate = self
-        calendar.backgroundColor = UIColor(red: 246/255, green: 216/255, blue: 23/255, alpha: 1)
-        calendar.scope = .month
-        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 20.0)
-        calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 16.0)
-        calendar.appearance.weekdayFont = UIFont.boldSystemFont(ofSize: 20.0)
-        
-        calendar.appearance.todayColor = .systemRed
-        calendar.appearance.titleTodayColor = .black
-        calendar.appearance.titleDefaultColor = .red
-        view.addSubview(calendar)
-        
+
+
+
         fillBlankView.backgroundColor = UIColor(red: 246/255, green: 216/255, blue: 23/255, alpha: 1)
         view.addSubview(fillBlankView)
-
-                
-        
-        
-        
-        self.calendar = calendar
         
         let yellowBlock = UIView()
-        view.addSubview(yellowBlock)
         yellowBlock.backgroundColor = UIColor.groupTableViewBackground
         yellowBlock.translatesAutoresizingMaskIntoConstraints = false
         self.yellowBlock = yellowBlock
@@ -128,8 +112,11 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         
         
         
+        calendarVC = CalendarViewController()
+        addChild(calendarVC)
+        view.addSubview(calendarVC.view)
 
-        
+        view.addSubview(yellowBlock)
         self.view.addSubview(pagerView)
         self.view.addSubview(pageControl)
         view.addSubview(addNoteButton)
@@ -138,29 +125,17 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         view.addSubview(budgetTableView)
         budgetTableView.isHidden = true
         addBudgetButton.isHidden = true
-        
-
-//        if let addEventContent = UserDefaults.standard.value(forKey: "description") as? String {
-//            addEventDescription = addEventContent
-//        }
-//
-//        if let addEventDateContent = UserDefaults.standard.value(forKey: "date") as? String {
-//            addEventDate = addEventDateContent
-//        }
-//
-//        if let addEventTimeContent = UserDefaults.standard.value(forKey: "time") as? String {
-//            addEventTime = addEventTimeContent
-//        }
-//
-//        if let addEventRepeatValueContent = UserDefaults.standard.value(forKey: "repeatValue") as? String {
-//            addEventRepeatValue = addEventRepeatValueContent
-//        }
-        
 
         
 //MARK:- AutoLayout
-        calendar.snp.makeConstraints { (make) in
-
+//        calendarView.snp.makeConstraints { (make) in
+//            make.leading.equalToSuperview()
+//            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+//            make.trailing.equalToSuperview()
+//            make.height.equalTo(self.view).dividedBy(3)
+//        }
+        
+        calendarVC.view.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
             make.trailing.equalToSuperview()
@@ -169,13 +144,13 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         
         fillBlankView.snp.makeConstraints { (make) in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(calendar.snp.bottom)
+            make.top.equalTo(calendarVC.view.snp.bottom)
             make.bottom.equalTo(yellowBlock.snp.top)
         }
         
         yellowBlock.snp.makeConstraints { (make) in
-            make.top.equalTo(calendar.safeAreaLayoutGuide.snp.bottom).offset(50)
-            make.height.equalTo(calendar).dividedBy(2)
+            make.top.equalTo(calendarVC.view.safeAreaLayoutGuide.snp.bottom).offset(50)
+            make.height.equalTo(calendarVC.view).dividedBy(2)
             make.width.equalToSuperview()
         }
         pagerView.snp.makeConstraints { (make) in
@@ -189,12 +164,12 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
             make.centerX.equalTo(pagerView)
         }
         addNoteButton.snp.makeConstraints { (make) in
-            make.top.equalTo(calendar.snp.bottom).offset(-10)
+            make.top.equalTo(calendarVC.view.snp.bottom).offset(-10)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(60)
         }
         addBudgetButton.snp.makeConstraints { (make) in
-            make.top.equalTo(calendar.snp.bottom).offset(-10)
+            make.top.equalTo(calendarVC.view.snp.bottom).offset(-10)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(60)
         }
@@ -206,31 +181,63 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         }
         budgetTableView.snp.makeConstraints { (make) in
             make.top.equalTo(yellowBlock.snp.top)
+//            make.top.equalTo(calendar.snp.bottom)
             make.width.equalToSuperview()
             make.bottom.equalTo(pagerView.snp.top)
         }
 }
-    
-    
+//    //Dowcasting
+//    //1.檢查 instance type
+//    let a: Any? = "1"
+//    //2.optional
+//    let b: String? = nil
+//
     override func viewDidLayoutSubviews() {
         self.applyCurvedPath(givenView: yellowBlock,curvedPercent: 0.2)
-    }
-    
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        dateFormatter.dateFormat = "yyyy-MMM-dd"
-//        let calenderUserPickDate = dateFormatter.string(from: date)
-//        if calenderUserPickDate == addEventDate {
-//
+//        //1.檢查 instance type
+//        if
+//            let bObject = self.a as? String {
+//            print(bObject)
 //        }
-        print("\(dateFormatter.string(from: date))")
+//
+//        guard
+//            let a1Object = self.a as? String
+//        else {
+//            //fail downcasting
+//            return
+//        }
+//        print(a1Object)
+//
+//        //2.optional
+//        if let bObject = b { // b != nil 進 block, b == nil 不進 block
+//            print(bObject)
+//        }
+//
+//        guard
+//            let a2Object = self.b
+//        else {
+//            //b == nil
+//            return
+//        }
+//        // b != nil
+//        print(a2Object)
     }
     
+        
+    private func reloadAllTableViews() {
+        noteContent = decodeData.filter({return $0.dateString == dateStringFromCalendarVC})
+        print(dateStringFromCalendarVC)
+        print(noteContent)
+        
+        self.noteTableView.reloadData()
+        self.budgetTableView.reloadData()
+    }
     
 }
 
 //MARK: Private
 
-extension CalendarViewController {
+extension MainViewController {
     private func setupUI() {
         self.view.backgroundColor = .groupTableViewBackground
         let settingButton = UIButton()
@@ -242,12 +249,6 @@ extension CalendarViewController {
         let currHeight = rightBarButton.customView?.heightAnchor.constraint(equalToConstant: 24)
             currHeight?.isActive = true
         navigationItem.rightBarButtonItem = rightBarButton
-        
-
-        
-
-        
-        
     }
     
     func pathCurvedForView(givenView: UIView, curvedPercent:CGFloat) ->UIBezierPath
@@ -282,7 +283,7 @@ extension CalendarViewController {
     
 }
 
-extension CalendarViewController: FSPagerViewDelegate,FSPagerViewDataSource{
+extension MainViewController: FSPagerViewDelegate,FSPagerViewDataSource{
     //MARK:- FSPagerView Datasource
     func numberOfItems(in pagerView: FSPagerView) -> Int {
         return numberOfItems
@@ -358,49 +359,145 @@ extension CalendarViewController: FSPagerViewDelegate,FSPagerViewDataSource{
 }
 
 //MARK:- UITableView
-extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
-    
+extension MainViewController: UITableViewDataSource, UITableViewDelegate{
     
     func numberOfSections(in tableView: UITableView) -> Int {
         switch tableView {
         case noteTableView:
-            return 1
+            return noteSectionTitle.count
         case budgetTableView:
             return budgetSectionTitle.count
         default:
             fatalError("Invalid Table")
         }
-        
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == noteTableView{
-            return 1
-        }else if tableView == budgetTableView{
+        if tableView == noteTableView {
+            if section == 0 {
+                if noteContent.count == 0 {
+                    return 1
+                } else {
+                    return noteContent.count
+                }
+            } else {
+                return 1
+            }
+            
+        } else if tableView == budgetTableView {
             return 1
         }
         return Int()
     }
+    
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if tableView == noteTableView{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
+        
+//        if indexPath.section == 0 {
+//
+//            //if noteContent is 0
+//            if noteContent.count == 0 {
+//                let cell = UITableViewCell()
+//                cell.textLabel?.text = "Add something..."
+//                cell.textLabel?.textColor = .lightGray
+//                cell.backgroundColor = .groupTableViewBackground
+////                eventTimeLabel.isHidden = true
+//                return cell
+//            }
+//
+//            //deque reuse
+//            guard let
+//                    cell = tableView.dequeueReusableCell(withIdentifier: NoteEventTableViewCell.identifier)  as? NoteEventTableViewCell
+//            else {
+//                //init
+//                let noteCell = NoteEventTableViewCell(style: .subtitle, reuseIdentifier: NoteEventTableViewCell.identifier)
+//
+//                noteCell.config(model: noteContent[indexPath.row])
+//
+//                return noteCell
+//            }
+//            //如果有 reuse cell
+//            cell.config(model: noteContent[indexPath.row])
+//
+//        } else if indexPath.section == 1 {
+//
+//            //deque reuse
+//            guard let
+//                    cell = tableView.dequeueReusableCell(withIdentifier: TestCell.identifier)  as? TestCell
+//            else {
+//                //init
+//                let testCell = TestCell(style: .subtitle, reuseIdentifier: TestCell.identifier)
+//                testCell.config(model: "111")
+//
+//                return testCell
+//            }
+//            //如果有 reuse cell
+//            cell.config(model: "111")
+//
+//        } else {
+//            return UITableViewCell()
+//        }
+//
+//        return UITableViewCell()
+        
+        tableView.rowHeight = 44
+        if tableView == noteTableView {
 
-            cell.textLabel?.text = "Add something..."
-            cell.textLabel?.alpha = 0.3
-            cell.backgroundColor = .groupTableViewBackground
-            return cell
-        }else if tableView == budgetTableView{
+            if noteContent.count == 0 {
+                let cell = UITableViewCell()
+                cell.textLabel?.text = "Add something..."
+                cell.textLabel?.textColor = .lightGray
+                cell.backgroundColor = .groupTableViewBackground
+//                eventTimeLabel.isHidden = true
+                return cell
+                                
+                
+
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteEventTableViewCell.identifier) as? NoteEventTableViewCell else {
+                    let noteCell = NoteEventTableViewCell(style: .subtitle, reuseIdentifier: NoteEventTableViewCell.identifier)
+                    noteCell.config(model: noteContent[indexPath.row])
+                    return noteCell
+                }
+                cell.config(model: noteContent[indexPath.row])
+                
+//                let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
+////                cell.config(model: noteContent[indexPath.row])
+//                let eventTimeLabel = UILabel()
+//                cell.textLabel?.text = noteContent[indexPath.row].description
+//                print(indexPath.row)
+//                cell.backgroundColor = .groupTableViewBackground
+//                cell.textLabel?.textColor = .black
+//                eventTimeLabel.text = noteContent[indexPath.row].timeString
+//                eventTimeLabel.textColor = .black
+//                eventTimeLabel.backgroundColor = .groupTableViewBackground
+//                cell.contentView.addSubview(eventTimeLabel)
+//                
+//                eventTimeLabel.snp.makeConstraints { (make) in
+//                    make.trailing.equalToSuperview().offset(-20)
+//                    make.centerY.equalToSuperview()
+//                }
+                
+                return cell
+
+            }
+            
+            
+        } else if tableView == budgetTableView {
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomBudget", for: indexPath)
+            
             cell.textLabel?.text = "Add something..."
-            cell.textLabel?.alpha = 0.3
+            cell.textLabel?.textColor = .lightGray
             cell.backgroundColor = .groupTableViewBackground
             return cell
         }
         return UITableViewCell()
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if tableView == noteTableView{
+        if tableView == noteTableView {
             return "To do"
-        }else if tableView == budgetTableView{
+        } else if tableView == budgetTableView {
             return budgetSectionTitle[section]
         }
         return String()
@@ -411,7 +508,7 @@ extension CalendarViewController: UITableViewDataSource, UITableViewDelegate{
 
 
 //MARK:- Events
-extension CalendarViewController {
+extension MainViewController {
     
 
     
@@ -422,7 +519,11 @@ extension CalendarViewController {
     
     @objc func addNoteEvent(sender: UIButton){
         let noteVC = AddNoteEventViewController()
+        noteVC.executeClosure = {
+            self.reloadAllTableViews()
+        }
         let addNoteNav = UINavigationController(rootViewController: noteVC)
+        addNoteNav.modalTransitionStyle = .crossDissolve
         self.present(addNoteNav, animated: true, completion: nil)
         
 
