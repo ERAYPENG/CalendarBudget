@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */; };
+		04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */; };
 		045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045FFA2425B5A92B005121FF /* CalendarViewController.swift */; };
 		04848EFE257699F300F2695B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04848EFD257699F300F2695B /* AppDelegate.swift */; };
 		04848F02257699F300F2695B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04848F01257699F300F2695B /* MainViewController.swift */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEventTableViewCell.swift; sourceTree = "<group>"; };
+		04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteEventTableViewCell.swift; sourceTree = "<group>"; };
 		045FFA2425B5A92B005121FF /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		04848EFA257699F300F2695B /* CalendarBudget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarBudget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04848EFD257699F300F2695B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */,
+				04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 			files = (
 				045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */,
 				04848F02257699F300F2695B /* MainViewController.swift in Sources */,
+				04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */,
 				04867697257CA86A00EAAB2E /* SettingViewController.swift in Sources */,
 				0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */,
 				04C35E7E2590D0AB0028BF75 /* AddNoteEventViewController.swift in Sources */,

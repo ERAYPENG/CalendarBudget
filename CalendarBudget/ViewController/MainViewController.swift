@@ -10,21 +10,18 @@ import SnapKit
 import FSPagerView
 
 class MainViewController: UIViewController {
+    var executeClosure: (()->())?
     lazy var noteContent = [AddNoteEventContent]()
-    var calendarVC: UIViewController!
-//    let calendarVC = CalendarViewController()
-//    var calendarVC: UIViewCself.view.addSubview(calendarView)ontroller!
+    let calendarVC = CalendarViewController()
+    let pagerViewVC = PagerViewViewController()
     lazy var eventLabel: UILabel = {
         let eventLabel = UILabel()
         return eventLabel
     }()
     
-    var dateStringFromCalendarVC: String?
 
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
-    fileprivate let imageNames = ["noteIcon","budgetIcon"]
-    fileprivate var numberOfItems = 2
     fileprivate var noteSectionTitle = ["To do"]
     fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     fileprivate var addEventDescription: String?
@@ -33,24 +30,6 @@ class MainViewController: UIViewController {
     fileprivate var addEventRepeatValue: String?
     let dateFormatter = DateFormatter()
     let timeFormatter = DateFormatter()
-    lazy var pagerView: FSPagerView = {
-        let pagerView = FSPagerView()
-        pagerView.dataSource = self
-        pagerView.delegate = self
-        pagerView.isInfinite = false
-        pagerView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "Cell")
-        pagerView.transformer = FSPagerViewTransformer(type: .ferrisWheel)
-        return pagerView
-    }()
-    
-    lazy var pageControl: FSPageControl = {
-        let pageControl = FSPageControl()
-        pageControl.numberOfPages = imageNames.count
-        pageControl.contentHorizontalAlignment = .right
-        pageControl.contentInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        pageControl.currentPage = 1
-        return pageControl
-    }()
     
     lazy var noteTableView: UITableView = {
         let noteTableView = UITableView()
@@ -86,7 +65,6 @@ class MainViewController: UIViewController {
         return addBudgetButton
     }()
     
-//    var formatter = DateFormatter()
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,9 +75,12 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("calendar vc did load")
+        
+        self.calendarVC.executeClosureFromCalendarVC = { (str) in
+            self.reloadAllTableViews()
+        }
+        
         self.setupUI()
-
-
 
         fillBlankView.backgroundColor = UIColor(red: 246/255, green: 216/255, blue: 23/255, alpha: 1)
         view.addSubview(fillBlankView)
@@ -110,9 +91,27 @@ class MainViewController: UIViewController {
         self.yellowBlock = yellowBlock
         
         
+        let pagerView = pagerViewVC.pagerView
+        let pageControl = pagerViewVC.pageControl
         
+        pagerViewVC.executeClosure = { (index) in
+            switch pageControl.currentPage {
+            case 0:
+                self.noteTableView.isHidden = false
+                self.addNoteButton.isHidden = false
+                self.budgetTableView.isHidden = true
+                self.addBudgetButton.isHidden = true
+                
+            case 1:
+                self.budgetTableView.isHidden = false
+                self.addBudgetButton.isHidden = false
+                self.noteTableView.isHidden = true
+                self.addNoteButton.isHidden = true
+            default:
+                print("something wrong")
+            }
+        }
         
-        calendarVC = CalendarViewController()
         addChild(calendarVC)
         view.addSubview(calendarVC.view)
 
@@ -225,8 +224,7 @@ class MainViewController: UIViewController {
     
         
     private func reloadAllTableViews() {
-        noteContent = decodeData.filter({return $0.dateString == dateStringFromCalendarVC})
-        print(dateStringFromCalendarVC)
+        noteContent = decodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
         print(noteContent)
         
         self.noteTableView.reloadData()
@@ -279,81 +277,6 @@ extension MainViewController {
         givenView.layer.addSublayer(shapeLayer)
     }
     
-    
-    
-}
-
-extension MainViewController: FSPagerViewDelegate,FSPagerViewDataSource{
-    //MARK:- FSPagerView Datasource
-    func numberOfItems(in pagerView: FSPagerView) -> Int {
-        return numberOfItems
-    }
-    
-    func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
-        let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "Cell", at: index)
-        cell.imageView?.image = UIImage(named: self.imageNames[index])
-        cell.imageView?.backgroundColor = .clear
-        cell.imageView?.contentMode = .scaleAspectFill
-        cell.imageView?.clipsToBounds = true
-        if index == 0{
-            cell.textLabel?.text = "Note"
-        }else if index == 1{
-            cell.textLabel?.text = "Budget"
-        }
-        cell.textLabel?.textColor = .black
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 30)
-        cell.textLabel?.backgroundColor = .clear
-        cell.textLabel?.superview?.backgroundColor = .clear
-        cell.imageView?.snp.makeConstraints({ (make) in
-            make.center.equalToSuperview()
-            make.height.width.equalTo(80)
-        })
-        cell.textLabel?.snp.makeConstraints({ (make) in
-            make.centerX.equalToSuperview()
-            
-        })
-
-        
-        return cell
-    }
-    // MARK:- FSPagerView Delegate
-    func pagerView(_ pagerView: FSPagerView, willDisplay cell: FSPagerViewCell, forItemAt index: Int) {
-        
-        pageControl.currentPage = index
-      
-        
-
-    }
-    
-    func pagerView(_ pagerView: FSPagerView, shouldSelectItemAt index: Int) -> Bool {
-        return false
-    }
-    
-   
-    
-    func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
-        pageControl.currentPage = targetIndex
-        switch pageControl.currentPage {
-        case 0:
-            noteTableView.isHidden = false
-            addNoteButton.isHidden = false
-            budgetTableView.isHidden = true
-            addBudgetButton.isHidden = true
-            
-        case 1:
-            budgetTableView.isHidden = false
-            addBudgetButton.isHidden = false
-            noteTableView.isHidden = true
-            addNoteButton.isHidden = true
-        default:
-            print("something wrong")
-        }
-    }
-    
-    
-    func pagerViewDidEndScrollAnimation(_ pagerView: FSPagerView) {
-        pageControl.currentPage = pagerView.currentIndex
-    }
     
     
 }
@@ -460,7 +383,9 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
                     noteCell.config(model: noteContent[indexPath.row])
                     return noteCell
                 }
+                cell.backgroundColor = .groupTableViewBackground
                 cell.config(model: noteContent[indexPath.row])
+
                 
 //                let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
 ////                cell.config(model: noteContent[indexPath.row])

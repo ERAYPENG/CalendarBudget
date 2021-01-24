@@ -12,10 +12,31 @@ import SnapKit
 
 
 class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendarDelegate {
-    public var executeClosure: ((String)->(String))?
-    var dateStringFromCalendarVC: String = ""
+    var executeClosureFromCalendarVC: ((String)->())?
+    var calendarVCDate: String = "" {
+        didSet {
+            print(calendarVCDate)
+
+            if let closure = self.executeClosureFromCalendarVC {
+                print("OK")
+                closure(calendarVCDate)
+            } else {
+                print("ERROR")
+            }
+        }
+    }
     fileprivate weak var calendar: FSCalendar!
     let dateFormatter = DateFormatter()
+//    func sendPropertyFromCalendarVC(handler: @escaping () -> Void) {
+//        executeClosure = handler
+//        if let executeClosure = executeClosure {
+//            executeClosure()
+//        }
+//    }
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         dateFormatter.dateFormat = "yyyy-MMM-dd"
@@ -31,25 +52,30 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         calendar.appearance.titleTodayColor = .black
         calendar.appearance.titleDefaultColor = .red
         if let today = calendar.today {
-            dateStringFromCalendarVC = dateFormatter.string(from: today)
-            if let closure = executeClosure {
-                print("OK")
-                if let today = calendar.today {
-                    dateStringFromCalendarVC = dateFormatter.string(from: today)
-                    closure(dateStringFromCalendarVC)
-                }
-            }
-        }
-        print(dateStringFromCalendarVC)
-        if let closure = executeClosure {
-            print("OK")
-            if let today = calendar.today {
-                dateStringFromCalendarVC = dateFormatter.string(from: today)
-                closure(dateStringFromCalendarVC)
-            }
-//            closure(dateStringFromCalendarVC)
+            calendarVCDate = dateFormatter.string(from: today)
         }
         
+        
+        
+//        sendPropertyFromCalendarVC(handler: dateStringFromCalendarVC)
+//        func sendPropertyFromCalendarVC(handler: @escaping () -> Void) {
+//            executeClosure = handler
+//            if let today = calendar.today {
+//                dateStringFromCalendarVC = dateFormatter.string(from: today)
+//            }
+//            if let executeClosure = executeClosure {
+//                executeClosure()
+//            }
+//        }
+//        sendPropertyFromCalendarVC {
+//            <#code#>
+//        }
+//        func process() {
+//            if let executeClosure = executeClosure {
+//                executeClosure()
+//            }
+//        }
+//
 
 
         self.view.addSubview(calendar)
@@ -65,13 +91,21 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-//        self.noteTableView.reloadData()
+
         MainViewController().noteTableView.reloadData()
 
         dateFormatter.dateFormat = "yyyy-MMM-dd"
-        let selectDate = dateFormatter.string(from: date)
-        print(selectDate)
-        dateStringFromCalendarVC = dateFormatter.string(from: date)
+//        let selectDate = dateFormatter.string(from: date)
+//        print(selectDate)
+        calendarVCDate = dateFormatter.string(from: date)
+//        print(dateStringFromCalendarVC)
+//        if let closure = self.executeClosure {
+//            print("dateStringFromCalendarVC")
+//            closure(calendarVCDate)
+//        }
+//        if let closure = self.executeClosure {
+//            closure(dateStringFromCalendarVC)
+//        }
         
 //        self.reloadAllTableViews()
 //        if dateStringFromCalendarVC == decodeData[0].dateString {

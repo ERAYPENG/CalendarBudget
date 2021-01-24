@@ -90,30 +90,11 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         repeatViewControllerRowNumber = row
     }
     let userDefault = UserDefaults.standard
-    var userPickDate: String?
-    var userPickTime: String?
-    lazy var descriptionInputTextField: UITextField = {
-        let descriptionInputTextField = UITextField()
-        descriptionInputTextField.delegate = self
-        descriptionInputTextField.clearButtonMode = .whileEditing
-        descriptionInputTextField.keyboardType = .default
-        descriptionInputTextField.returnKeyType = .done
-        descriptionInputTextField.backgroundColor = .clear
-        descriptionInputTextField.placeholder = "Enter text here"
-        return descriptionInputTextField
-    }()
     
-    var descriptionUserInputText: String?
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField == descriptionInputTextField {
-            descriptionUserInputText = textField.text
-        }
-    }
+    var selectedPickerDate: String = ""
+    var selectedPickerTime: String = ""
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return true
-    }
+    private var descriptionUserInputText: String = ""
     
     func repeatViewControllerDidSelectRow(title: String) {
         
@@ -130,29 +111,6 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
     let dateFormatter = DateFormatter()
     let timeFormatter = DateFormatter()
     
-    
-    lazy var userDatePicker: UIDatePicker = {
-        let userDatePicker = UIDatePicker(frame: CGRect.zero)
-        userDatePicker.datePickerMode = .dateAndTime
-        if #available(iOS 13.4, *) {
-            userDatePicker.preferredDatePickerStyle = .compact
-            userDatePicker.sizeToFit()
-        } else {
-            // Fallback on earlier versions
-        }
-        userDatePicker.minuteInterval = 15
-        userDatePicker.date = NSDate() as Date
-        let userDateFormatter = DateFormatter()
-        userDateFormatter.dateFormat = "yyyy-MMM-dd HH:mm"
-        let fromDateTime = userDateFormatter.date(from: "2021-Jan-01 00:00")
-        userDatePicker.minimumDate = fromDateTime
-        let endDateTime = userDateFormatter.date(from: "2024-Dec-01 18:00")
-        userDatePicker.maximumDate = endDateTime
-        userDatePicker.addTarget(self, action: #selector(datePicked), for: .valueChanged)
-        return userDatePicker
-    }()
-    
-    
     let addNoteEventTitle = ["Description","Date","Repeat"]
     
     lazy var addNoteEventTableView: UITableView = {
@@ -160,7 +118,7 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         addNoteEventTableView.backgroundColor = .groupTableViewBackground
         addNoteEventTableView.delegate = self
         addNoteEventTableView.dataSource = self
-        addNoteEventTableView.register(UITableViewCell.self, forCellReuseIdentifier: "addNoteCell")
+        addNoteEventTableView.register(AddNoteEventTableViewCell.self, forCellReuseIdentifier: AddNoteEventTableViewCell.identifier)
         addNoteEventTableView.isScrollEnabled = true
         addNoteEventTableView.tableFooterView = UIView()
         return addNoteEventTableView
@@ -187,7 +145,7 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         saveButton.layer.borderColor = UIColor.lightGray.cgColor
         saveButton.layer.borderWidth = 5.0
         saveButton.addTarget(self, action: #selector(saveEvent), for: .touchUpInside)
-        
+//        userDatePickerTextField.inputView = self.userDatePicker
         view.addSubview(finishButton)
         view.addSubview(addNoteEventTableView)
         view.addSubview(saveButton)
@@ -212,12 +170,15 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
             make.height.equalTo(50)
         }
         addNoteEventTableView.snp.makeConstraints { (make) in
+            //y
             make.top.equalToSuperview().offset(70)
+            make.bottom.equalTo(saveButton.snp.top)
+            //x
+            make.centerX.equalToSuperview()
             make.width.equalToSuperview()
-            make.bottom.equalToSuperview().dividedBy(2)
         }
         saveButton.snp.makeConstraints { (make) in
-            make.top.equalTo(addNoteEventTableView.snp.bottom)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-24)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().dividedBy(2)
             make.height.equalTo(60)
@@ -260,9 +221,9 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
         return 1
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 60
+//    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 20
@@ -273,33 +234,53 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "addNoteCell", for: indexPath)
-        cell.backgroundColor = UIColor(red: 216/255, green: 223/255, blue: 221/255, alpha: 1)
-        if indexPath.section == 0{
-            cell.addSubview(self.descriptionInputTextField)
-            
-            descriptionInputTextField.snp.makeConstraints { (make) in
-                make.leading.equalToSuperview().offset(20)
-                make.trailing.equalToSuperview()
-                make.top.equalTo(cell.snp.top).offset(5)
-                make.bottom.equalTo(cell.snp.bottom).offset(-5)
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AddNoteEventTableViewCell.identifier, for: indexPath) as? AddNoteEventTableViewCell else {
+            return AddNoteEventTableViewCell(style: .default, reuseIdentifier: AddNoteEventTableViewCell.identifier)
+        }
+        
+        if indexPath.section == 0 {
+            cell.config(type: AddNoteEventTableViewCellType.textfield)
+            cell.descriptionEndEditingClosure = { (str) in
+                self.descriptionUserInputText = str
             }
+//            if let cell = UITableViewCell(style: .default, reuseIdentifier: AddNoteEventTableViewCell.identifier)
+//            cell.addSubview(self.descriptionInputTextField)
+//            
+//            descriptionInputTextField.snp.makeConstraints { (make) in
+//                make.leading.equalToSuperview().offset(20)
+//                make.trailing.equalToSuperview()
+//                make.top.equalTo(cell.snp.top).offset(5)
+//                make.bottom.equalTo(cell.snp.bottom).offset(-5)
+//            }
         } else if indexPath.section == 1 {
-            cell.addSubview(userDatePickerTextField)
-            userDatePickerTextField.addSubview(self.userDatePicker)
-            userDatePickerTextField.snp.makeConstraints { (make) in
-                make.leading.trailing.equalToSuperview().offset(20)
-                make.top.equalTo(cell.snp.top).offset(5)
-                make.bottom.equalTo(cell.snp.bottom).offset(-5)
-
+            cell.userPickDateClosure = { (dateStr, timeStr) in
+                self.selectedPickerDate = dateStr
+                self.selectedPickerTime = timeStr
             }
+            cell.config(type: AddNoteEventTableViewCellType.datePicker)
+//            cell.addSubview(userDatePickerTextField)
+//            cell.contentView.addSubview(userDatePickerTextField)
+            
+//            cell.contentView.addSubview(userDatePicker)
+            
+//            userDatePickerTextField.inputView = self.userDatePicker
+//            userDatePickerTextField.addSubview(self.userDatePicker)
+//            userDatePickerTextField.inputView = self.userDatePicker
+//            userDatePickerTextField.snp.makeConstraints { (make) in
+//                make.leading.trailing.equalToSuperview().offset(20)
+//                make.centerY.equalTo(cell)
+//                make.height.equalToSuperview().dividedBy(2)
+//            }
+//            userDatePicker.snp.makeConstraints { (make) in
+//                make.leading.trailing.equalToSuperview().offset(20)
+//                make.centerY.equalTo(cell)
+//                make.height.equalToSuperview().dividedBy(2)
+//            }
 
 
         } else if indexPath.section == 2 {
-            cell.accessoryType = .disclosureIndicator
-
-            cell.textLabel?.text = "Never"
-            
+            cell.config(type: AddNoteEventTableViewCellType.repeatValue)
         }
 
         return cell
@@ -350,21 +331,16 @@ extension AddNoteEventViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    @objc func datePicked(datePicker: UIDatePicker) {
-        userPickDate = dateFormatter.string(from: datePicker.date)
-        userPickTime = timeFormatter.string(from: datePicker.date)
-    }
-    
     @objc func saveEvent(sender: UIButton) {
         
         addNoteEventTableView.reloadData()
-        if let descriptionUserInputText = descriptionUserInputText {
-            if let userPickDate = userPickDate, let userPickTime = userPickTime,  repeatValueFromRepeatViewController != "Never" {
-                    print(userPickDate)
-                    print(userPickTime)
-                    print(repeatValueFromRepeatViewController)
+        
+        
+        if descriptionUserInputText != "" {//TODO: cell refactor
+            
+            if repeatValueFromRepeatViewController != "Never" {
                 
-                let event = AddNoteEventContent(dateString: userPickDate, timeString: userPickTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
+                let event = AddNoteEventContent(dateString: self.selectedPickerDate, timeString: self.selectedPickerTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
                 addNoteEventContents.append(event)
                 print(addNoteEventContents)
                 if let jsonData = try? encoder.encode(addNoteEventContents) {
@@ -378,51 +354,9 @@ extension AddNoteEventViewController {
                     }
                 }
                 self.dismiss(animated: true, completion: nil)
-            } else if userPickDate == nil, repeatValueFromRepeatViewController != "Never" {
-                let userPickDefaultDate = dateFormatter.string(from: userDatePicker.date)
-                let userPickDefaultTime = timeFormatter.string(from: userDatePicker.date)
-                print(userPickDefaultDate)
-                print(userPickDefaultTime)
-                print(repeatValueFromRepeatViewController)
-                let event = AddNoteEventContent(dateString: userPickDefaultDate, timeString: userPickDefaultTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
-                addNoteEventContents.append(event)
-                print(addNoteEventContents)
-                if let jsonData = try? encoder.encode(addNoteEventContents) {
-//                    let jsonString = String(data: jsonData, encoding: .utf8)
-                    do {
-                        decodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
-                        print(decodeData[0].dateString)
-                    } catch {
-                        print("decoded failed")
-                        print("\(error)")
-                    }
-                }
-                self.dismiss(animated: true, completion: nil)
-            } else if let userPickDate = userPickDate, let userPickTime = userPickTime, repeatValueFromRepeatViewController == "Never" {
-                print(userPickDate)
-                print(userPickTime)
-                print(repeatValueFromRepeatViewController)
-                let event = AddNoteEventContent(dateString: userPickDate, timeString: userPickTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
-                addNoteEventContents.append(event)
-                print(addNoteEventContents)
-                if let jsonData = try? encoder.encode(addNoteEventContents) {
-//                    let jsonString = String(data: jsonData, encoding: .utf8)
-                    do {
-                        decodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
-                        print(decodeData[0].dateString)
-                    } catch {
-                        print("decoded failed")
-                        print("\(error)")
-                    }
-                }
-                self.dismiss(animated: true, completion: nil)
-            } else if userPickDate == nil && repeatValueFromRepeatViewController == "Never" {
-                let userPickDefaultDate = dateFormatter.string(from: userDatePicker.date)
-                let userPickDefaultTime = timeFormatter.string(from: userDatePicker.date)
-                print(userPickDefaultDate)
-                print(userPickDefaultTime)
-                print(repeatValueFromRepeatViewController)
-                let event = AddNoteEventContent(dateString: userPickDefaultDate, timeString: userPickDefaultTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
+            } else {
+              
+                let event = AddNoteEventContent(dateString: selectedPickerDate, timeString: selectedPickerTime, description: descriptionUserInputText, repeatValue: repeatValueFromRepeatViewController)
                 addNoteEventContents.append(event)
                 print(addNoteEventContents)
                 if let jsonData = try? encoder.encode(addNoteEventContents) {
@@ -437,7 +371,7 @@ extension AddNoteEventViewController {
                 }
                 self.dismiss(animated: true, completion: nil)
             }
-        } else if descriptionUserInputText == nil {
+        } else {// descriptionUserInputText == ""
             let addEventAlart = UIAlertController(title: "Oops!", message: "Enter something in Description", preferredStyle: .alert)
             let okAction = UIAlertAction(
                 title: "OK", style: .default, handler: nil

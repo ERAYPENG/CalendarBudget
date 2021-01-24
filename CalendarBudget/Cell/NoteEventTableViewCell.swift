@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class NoteEventTableViewCell: UITableViewCell {
     
@@ -14,6 +15,7 @@ class NoteEventTableViewCell: UITableViewCell {
     private lazy var titleLabel: UILabel = UILabel()
     
     private lazy var timeLabel: UILabel = UILabel()
+    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -29,12 +31,17 @@ class NoteEventTableViewCell: UITableViewCell {
         self.timeLabel.text = model.timeString
         titleLabel.textColor = .black
         titleLabel.textColor = .black
-        //                print(indexPath.row)
-        //                cell.backgroundColor = .groupTableViewBackground
-        //                cell.textLabel?.textColor = .black
-        //                eventTimeLabel.text = noteContent[indexPath.row].timeString
-        //                eventTimeLabel.textColor = .black
-        //                eventTimeLabel.backgroundColor = .groupTableViewBackground
+        self.contentView.addSubview(titleLabel)
+        self.contentView.addSubview(timeLabel)
+        
+        titleLabel.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview().offset(20)
+            make.centerY.equalToSuperview()
+        }
+        timeLabel.snp.makeConstraints { (make) in
+            make.trailing.equalToSuperview().offset(-20)
+            make.centerY.equalToSuperview()
+        }
     }
 }
 
@@ -68,3 +75,5 @@ class TestCell: UITableViewCell {
     }
     
 }
+
+
