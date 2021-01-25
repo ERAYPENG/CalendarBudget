@@ -106,14 +106,6 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        if reuseIdentifier == "AddNoteEventTableViewDescriptionCell" {
-            contentView.addSubview(descriptionInputTextField)
-        } else if reuseIdentifier == "AddNoteEventTableViewDateCell" {
-            
-        } else if reuseIdentifier == "AddNoteEventTableViewRepeatCell" {
-            
-        }
-        
         self.setupUI()
     }
     

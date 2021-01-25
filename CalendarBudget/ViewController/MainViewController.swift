@@ -19,6 +19,16 @@ class MainViewController: UIViewController {
         return eventLabel
     }()
     
+    
+    public var foodEventUserInputTest: String = ""
+    public var clothingEventUserInputTest: String = ""
+    public var housingEventUserInputTest: String = ""
+    public var trnsportationEventUserInputTest: String = ""
+    public var foodCostUserInputTest: String = ""
+    public var clothingCostUserInputTest: String = ""
+    public var housingCostUserInputTest: String = ""
+    public var trnsportationCostUserInputTest: String = ""
+    
 
     fileprivate weak var yellowBlock: UIView!
     fileprivate var fillBlankView: UIView = UIView()
@@ -46,7 +56,7 @@ class MainViewController: UIViewController {
         budgetTableView.backgroundColor = .groupTableViewBackground
         budgetTableView.dataSource = self
         budgetTableView.delegate = self
-        budgetTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CustomBudget")
+        budgetTableView.register(BudgetTableViewCell.self, forCellReuseIdentifier: BudgetTableViewCell.identifier)
         return budgetTableView
     }()
     
@@ -317,53 +327,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-//        if indexPath.section == 0 {
-//
-//            //if noteContent is 0
-//            if noteContent.count == 0 {
-//                let cell = UITableViewCell()
-//                cell.textLabel?.text = "Add something..."
-//                cell.textLabel?.textColor = .lightGray
-//                cell.backgroundColor = .groupTableViewBackground
-////                eventTimeLabel.isHidden = true
-//                return cell
-//            }
-//
-//            //deque reuse
-//            guard let
-//                    cell = tableView.dequeueReusableCell(withIdentifier: NoteEventTableViewCell.identifier)  as? NoteEventTableViewCell
-//            else {
-//                //init
-//                let noteCell = NoteEventTableViewCell(style: .subtitle, reuseIdentifier: NoteEventTableViewCell.identifier)
-//
-//                noteCell.config(model: noteContent[indexPath.row])
-//
-//                return noteCell
-//            }
-//            //如果有 reuse cell
-//            cell.config(model: noteContent[indexPath.row])
-//
-//        } else if indexPath.section == 1 {
-//
-//            //deque reuse
-//            guard let
-//                    cell = tableView.dequeueReusableCell(withIdentifier: TestCell.identifier)  as? TestCell
-//            else {
-//                //init
-//                let testCell = TestCell(style: .subtitle, reuseIdentifier: TestCell.identifier)
-//                testCell.config(model: "111")
-//
-//                return testCell
-//            }
-//            //如果有 reuse cell
-//            cell.config(model: "111")
-//
-//        } else {
-//            return UITableViewCell()
-//        }
-//
-//        return UITableViewCell()
-        
+
         tableView.rowHeight = 44
         if tableView == noteTableView {
 
@@ -380,29 +344,11 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteEventTableViewCell.identifier) as? NoteEventTableViewCell else {
                     let noteCell = NoteEventTableViewCell(style: .subtitle, reuseIdentifier: NoteEventTableViewCell.identifier)
-                    noteCell.config(model: noteContent[indexPath.row])
+//                    noteCell.config(model: noteContent[indexPath.row])
                     return noteCell
                 }
                 cell.backgroundColor = .groupTableViewBackground
                 cell.config(model: noteContent[indexPath.row])
-
-                
-//                let cell = tableView.dequeueReusableCell(withIdentifier: "CustomNote", for: indexPath)
-////                cell.config(model: noteContent[indexPath.row])
-//                let eventTimeLabel = UILabel()
-//                cell.textLabel?.text = noteContent[indexPath.row].description
-//                print(indexPath.row)
-//                cell.backgroundColor = .groupTableViewBackground
-//                cell.textLabel?.textColor = .black
-//                eventTimeLabel.text = noteContent[indexPath.row].timeString
-//                eventTimeLabel.textColor = .black
-//                eventTimeLabel.backgroundColor = .groupTableViewBackground
-//                cell.contentView.addSubview(eventTimeLabel)
-//                
-//                eventTimeLabel.snp.makeConstraints { (make) in
-//                    make.trailing.equalToSuperview().offset(-20)
-//                    make.centerY.equalToSuperview()
-//                }
                 
                 return cell
 
@@ -410,12 +356,14 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             
             
         } else if tableView == budgetTableView {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomBudget", for: indexPath)
-            
-            cell.textLabel?.text = "Add something..."
-            cell.textLabel?.textColor = .lightGray
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: BudgetTableViewCell.identifier) as? BudgetTableViewCell else {
+                let budgetCell = BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
+//                budgetCell.config()
+                return budgetCell
+            }
             cell.backgroundColor = .groupTableViewBackground
-            return cell
+            cell.config()
+//            cell.backgroundColor = .groupTableViewBackground
         }
         return UITableViewCell()
     }

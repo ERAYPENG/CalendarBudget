@@ -244,39 +244,12 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
             cell.descriptionEndEditingClosure = { (str) in
                 self.descriptionUserInputText = str
             }
-//            if let cell = UITableViewCell(style: .default, reuseIdentifier: AddNoteEventTableViewCell.identifier)
-//            cell.addSubview(self.descriptionInputTextField)
-//            
-//            descriptionInputTextField.snp.makeConstraints { (make) in
-//                make.leading.equalToSuperview().offset(20)
-//                make.trailing.equalToSuperview()
-//                make.top.equalTo(cell.snp.top).offset(5)
-//                make.bottom.equalTo(cell.snp.bottom).offset(-5)
-//            }
         } else if indexPath.section == 1 {
             cell.userPickDateClosure = { (dateStr, timeStr) in
                 self.selectedPickerDate = dateStr
                 self.selectedPickerTime = timeStr
             }
             cell.config(type: AddNoteEventTableViewCellType.datePicker)
-//            cell.addSubview(userDatePickerTextField)
-//            cell.contentView.addSubview(userDatePickerTextField)
-            
-//            cell.contentView.addSubview(userDatePicker)
-            
-//            userDatePickerTextField.inputView = self.userDatePicker
-//            userDatePickerTextField.addSubview(self.userDatePicker)
-//            userDatePickerTextField.inputView = self.userDatePicker
-//            userDatePickerTextField.snp.makeConstraints { (make) in
-//                make.leading.trailing.equalToSuperview().offset(20)
-//                make.centerY.equalTo(cell)
-//                make.height.equalToSuperview().dividedBy(2)
-//            }
-//            userDatePicker.snp.makeConstraints { (make) in
-//                make.leading.trailing.equalToSuperview().offset(20)
-//                make.centerY.equalTo(cell)
-//                make.height.equalToSuperview().dividedBy(2)
-//            }
 
 
         } else if indexPath.section == 2 {
