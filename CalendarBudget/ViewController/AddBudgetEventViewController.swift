@@ -7,18 +7,25 @@
 
 import UIKit
 
+struct AddBudgetEventContent: Codable {
+    var dateString: String
+    var categoryValueString: String
+    var costValueInt: Int
+}
+var addBudgetEventContent: [AddBudgetEventContent] = []
+var budgetContentDecodeData = [AddBudgetEventContent]()
 class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
-    func userDidSelectCategoryValue(value: String) {
-        self.userDidSelectValue = value
-    }
-    
     func userDidSelectCategoryRowNum(row: Int) {
         self.userDidSelectRowNum = row
     }
-    
-    private var userDidSelectValue: String = ""
+    var addBudgetEventCostValue: Int = 0
     private var userDidSelectRowNum: Int = 0
-    var categoryVC = CategoryViewController()
+    let mainVC = MainViewController()
+    let calenderVC = CalendarViewController()
+    let categoryVC = CategoryViewController()
+    var dateString: String = ""
+    var categoryValueString: String = "Food"
+    var costValue: Int = 0
     var addBudgetEventTitle = ["Category", "Cost"]
     lazy var addBudgetEventTableView: UITableView = {
         let tableView = UITableView()
@@ -56,6 +63,7 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .groupTableViewBackground
+        categoryVC.categoryVCDelegate = self
         self.view.addSubview(addBudgetEventTableView)
         self.view.addSubview(saveButton)
         self.view.addSubview(cancelButton)
@@ -93,6 +101,12 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        categoryVC.userDidSelectCategoyClosure = { (str) in
+            self.categoryValueString = str
+        }
+//        calenderVC.executeClosureFromCalendarVC = { (str) in
+//            self.dateString = str
+//        }
         print("add budget view appear")
     }
     
@@ -142,6 +156,9 @@ extension AddBudgetEventViewController: UITableViewDataSource, UITableViewDelega
             cell.config(type: AddBudgetEventTableViewCellType.category)
         } else if indexPath.section == 1 {
             cell.config(type: AddBudgetEventTableViewCellType.cost)
+            cell.userDidEndEditingCostTextFieldClosure = { (int) in
+                self.addBudgetEventCostValue = int
+            }
         }
         
         
@@ -151,7 +168,6 @@ extension AddBudgetEventViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
             self.navigationController?.pushViewController(categoryVC, animated: true)
-            categoryVC.categoryVCDelegate = self
             categoryVC.userIndex = userDidSelectRowNum
             
         }
@@ -168,6 +184,16 @@ extension AddBudgetEventViewController{
     }
     
     @objc func saveEvent(sender: UIButton) {
+        let event = AddBudgetEventContent(dateString: dateString, categoryValueString: categoryValueString, costValueInt: addBudgetEventCostValue)
+        addBudgetEventContent.append(event)
+        if let jsonData = try? JSONEncoder().encode(addBudgetEventContent) {
+            do {
+                budgetContentDecodeData = try JSONDecoder().decode([AddBudgetEventContent].self, from: jsonData)
+            } catch {
+                print("decoded failed")
+                print("\(error)")
+            }
+        }
         self.dismiss(animated: true, completion: nil)
     }
 }

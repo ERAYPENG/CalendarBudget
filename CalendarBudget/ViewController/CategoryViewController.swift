@@ -8,13 +8,13 @@
 import UIKit
 
 @objc protocol CategoryVCDelegate: class {
-    @objc func userDidSelectCategoryValue(value: String)
     @objc func userDidSelectCategoryRowNum(row: Int)
     
 }
 
 class CategoryViewController: UIViewController {
     var categoryVCDelegate: CategoryVCDelegate?
+    var userDidSelectCategoyClosure: ((String)->())?
     var userIndex: Int?
     lazy var categoryTableView: UITableView = {
         let tableView = UITableView()
@@ -28,6 +28,9 @@ class CategoryViewController: UIViewController {
     var budgetTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let closure = self.userDidSelectCategoyClosure {
+            closure(budgetTitle[0])
+        }
         self.view.backgroundColor = .groupTableViewBackground
         self.view.addSubview(self.categoryTableView)
         
@@ -38,7 +41,7 @@ class CategoryViewController: UIViewController {
             make.height.equalToSuperview()
         }
     }
-    
+
 
 }
 
@@ -78,7 +81,9 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
         self.userIndex = indexPath.row
         tableView.reloadData()
         let str = budgetTitle[self.userIndex ?? 0]
-        self.categoryVCDelegate?.userDidSelectCategoryValue(value: str)
+        if let closure = self.userDidSelectCategoyClosure {
+            closure(str)
+        }
         self.categoryVCDelegate?.userDidSelectCategoryRowNum(row: indexPath.row)
         
     }

@@ -12,9 +12,13 @@ enum AddBudgetEventTableViewCellType {
     case cost
 }
 
+
+
 class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     public static var identifier = "AddBudgetEventTableViewCell"
-    private var userDidSelectCategoryValue: String = "Food" 
+    var userDidEndEditingCostTextFieldClosure: ((Int)->())?
+    private var userDidSelectCategoryValue: String = "Food"
+    private var userDidEndEditinValue: Int = 0
     private var slotView: UIView = {
         let view = UIView()
         return view
@@ -35,8 +39,16 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     }()
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
         self.endEditing(true)
         return false
+    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        let intOfUserInput = Int(textField.text ?? "")
+        userDidEndEditinValue = intOfUserInput ?? 0
+        if let closure = self.userDidEndEditingCostTextFieldClosure {
+            closure(userDidEndEditinValue)
+        }
     }
     
     

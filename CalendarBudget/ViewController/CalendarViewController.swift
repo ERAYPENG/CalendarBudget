@@ -13,15 +13,11 @@ import SnapKit
 
 class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendarDelegate {
     var executeClosureFromCalendarVC: ((String)->())?
+    var userSelectDate: String = ""
     var calendarVCDate: String = "" {
         didSet {
-            print(calendarVCDate)
-
             if let closure = self.executeClosureFromCalendarVC {
-                print("OK")
                 closure(calendarVCDate)
-            } else {
-                print("ERROR")
             }
         }
     }
@@ -65,9 +61,9 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-
+        calendarVCDate = dateFormatter.string(from: date)
         MainViewController().noteTableView.reloadData()
-
+        
         dateFormatter.dateFormat = "yyyy-MMM-dd"
         calendarVCDate = dateFormatter.string(from: date)
         

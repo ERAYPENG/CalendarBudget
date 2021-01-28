@@ -23,36 +23,19 @@ class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
     private var slotView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
-//        view.backgroundColor = .clear
         return view
     }()
     
-    private var budgetEventTextField: UITextField = {
-        let textField = UITextField()
+    private var budgetEventLabel: UILabel = {
+        let textField = UILabel()
         return textField
     }()
     
-    private var budgetCostTextField: UITextField = {
-        let textField = UITextField()
-        textField.keyboardType = .numberPad
+    private var budgetCostLabel: UILabel = {
+        let textField = UILabel()
         return textField
     }()
 
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField {
-        case budgetEventTextField:
-            budgetEventUserInputText = textField.text ?? ""
-        case budgetCostTextField:
-            budgetCostUserInputText = textField.text ?? ""
-        default:
-            return
-        }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.endEditing(true)
-        return true
-    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -64,14 +47,14 @@ class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     public func config() {
-        self.slotView.addSubview(self.budgetEventTextField)
-        self.slotView.addSubview(self.budgetCostTextField)
+        self.slotView.addSubview(self.budgetEventLabel)
+        self.slotView.addSubview(self.budgetCostLabel)
             
-        self.budgetEventTextField.snp.makeConstraints { (make) in
+        self.budgetEventLabel.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
                 make.height.equalTo(44)
             }
-        self.budgetCostTextField.snp.makeConstraints { (make) in
+        self.budgetCostLabel.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
                 make.height.equalTo(44)
             }

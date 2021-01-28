@@ -63,7 +63,7 @@ let encoder = JSONEncoder()
 let decoder = JSONDecoder()
 
 var addNoteEventContents: [AddNoteEventContent] = []
-var decodeData = [AddNoteEventContent]()
+var noteContentDecodeData = [AddNoteEventContent]()
 
 class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate, UITextFieldDelegate {
     
@@ -304,8 +304,8 @@ extension AddNoteEventViewController {
                 if let jsonData = try? encoder.encode(addNoteEventContents) {
 //                    let jsonString = String(data: jsonData, encoding: .utf8)
                     do {
-                        decodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
-                        print(decodeData[0].dateString)
+                        noteContentDecodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
+                        print(noteContentDecodeData[0].dateString)
                     } catch {
                         print("decoded failed")
                         print("\(error)")
@@ -320,8 +320,8 @@ extension AddNoteEventViewController {
                 if let jsonData = try? encoder.encode(addNoteEventContents) {
 //                    let jsonString = String(data: jsonData, encoding: .utf8)
                     do {
-                        decodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
-                        print(decodeData[0].dateString)
+                        noteContentDecodeData = try decoder.decode([AddNoteEventContent].self, from: jsonData)
+                        print(noteContentDecodeData[0].dateString)
                     } catch {
                         print("decoded failed")
                         print("\(error)")

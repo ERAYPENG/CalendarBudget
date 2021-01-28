@@ -54,26 +54,5 @@ extension NoteEventTableViewCell {
     }
 }
 
-class TestCell: UITableViewCell {
-    
-    public static let identifier: String = "TestCell"
-    
-    let testLabel = UILabel()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .systemGreen
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func config(model: String) {
-        self.testLabel.text = model
-        self.contentView.backgroundColor = .systemGreen
-    }
-    
-}
 
 

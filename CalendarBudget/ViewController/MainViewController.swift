@@ -12,6 +12,7 @@ import FSPagerView
 class MainViewController: UIViewController {
     var executeClosure: (()->())?
     lazy var noteContent = [AddNoteEventContent]()
+    lazy var budgetContent = [AddBudgetEventContent]()
     let calendarVC = CalendarViewController()
     let pagerViewVC = PagerViewViewController()
     lazy var eventLabel: UILabel = {
@@ -35,7 +36,7 @@ class MainViewController: UIViewController {
     fileprivate var noteSectionTitle = ["To do"]
     fileprivate var budgetSectionTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     fileprivate var addEventDescription: String?
-    fileprivate var addEventDate: String?
+    fileprivate var addBudgetEventDate: String = ""
     fileprivate var addEventTime: String?
     let dateFormatter = DateFormatter()
     let timeFormatter = DateFormatter()
@@ -46,7 +47,6 @@ class MainViewController: UIViewController {
         noteTableView.dataSource = self
         noteTableView.delegate = self
         noteTableView.register(NoteEventTableViewCell.self, forCellReuseIdentifier: NoteEventTableViewCell.identifier)
-        noteTableView.register(TestCell.self, forCellReuseIdentifier: TestCell.identifier)
         return noteTableView
     }()
     
@@ -86,6 +86,7 @@ class MainViewController: UIViewController {
         print("calendar vc did load")
         
         self.calendarVC.executeClosureFromCalendarVC = { (str) in
+            self.addBudgetEventDate = str
             self.reloadAllTableViews()
         }
         
@@ -233,9 +234,8 @@ class MainViewController: UIViewController {
     
         
     private func reloadAllTableViews() {
-        noteContent = decodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
-        print(noteContent)
-        
+        noteContent = noteContentDecodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
+        budgetContent = budgetContentDecodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
         self.noteTableView.reloadData()
         self.budgetTableView.reloadData()
     }
@@ -356,9 +356,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             
         } else if tableView == budgetTableView {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BudgetTableViewCell.identifier) as? BudgetTableViewCell else {
-                let budgetCell = BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
-//                budgetCell.config()
-                return budgetCell
+                return BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
             }
             cell.backgroundColor = .groupTableViewBackground
             cell.config()
@@ -405,11 +403,7 @@ extension MainViewController {
         let addBudgetNav = UINavigationController(rootViewController: budgetVC)
         addBudgetNav.modalTransitionStyle = .crossDissolve
         self.present(addBudgetNav, animated: true, completion: nil)
-    }
-
-    
-    @objc func action(sender: UIBarButtonItem) {
-        print("button settled")
+        budgetVC.dateString = addBudgetEventDate
     }
     
 }
