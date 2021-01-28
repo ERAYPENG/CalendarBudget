@@ -12,26 +12,53 @@ enum AddBudgetEventTableViewCellType {
     case cost
 }
 
-class AddBudgetEventTableViewCell: UITableViewCell {
+class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     public static var identifier = "AddBudgetEventTableViewCell"
+    private var userDidSelectCategoryValue: String = "Food" 
     private var slotView: UIView = {
         let view = UIView()
         return view
     }()
-    var categoryTitleLabel: UILabel = {
+    private var categoryTitleLabel: UILabel = {
         let label = UILabel()
         return label
     }()
     
-    var costTextField: UITextField = {
+    private lazy var costTextField: UITextField = {
         let textField = UITextField()
+        textField.delegate = self
+        textField.clearButtonMode = .whileEditing
+        textField.returnKeyType = .done
         textField.keyboardType = .numberPad
         textField.placeholder = "0"
         return textField
     }()
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.endEditing(true)
+        return false
+    }
+    
+    
+    
+    lazy var doneToolBar: UIToolbar = {
+        let bar = UIToolbar()
+        bar.barStyle = .blackTranslucent
+        bar.barTintColor = .lightGray
+        return bar
+    }()
+    
+    lazy var flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+    
+    lazy var donButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(userDidEndEditing))
+    
+    lazy var items = [UIBarButtonItem]()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupUI()
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -39,19 +66,19 @@ class AddBudgetEventTableViewCell: UITableViewCell {
     }
     
     public func config(type: AddBudgetEventTableViewCellType) {
+
         switch type {
         case .category:
-            self.categoryTitleLabel.text = "Food"
+            self.categoryTitleLabel.text = userDidSelectCategoryValue
             self.accessoryType = .disclosureIndicator
-            
-            self.slotView.addSubview(categoryTitleLabel)
+            self.slotView.addSubview(self.categoryTitleLabel)
             self.categoryTitleLabel.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
                 make.height.equalTo(44)
             }
             
         case .cost:
-            self.slotView.addSubview(costTextField)
+            self.slotView.addSubview(self.costTextField)
             self.costTextField.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
                 make.height.equalTo(44)
@@ -65,10 +92,26 @@ class AddBudgetEventTableViewCell: UITableViewCell {
 //MARK:- private
 extension AddBudgetEventTableViewCell {
     private func setupUI() {
+        self.backgroundColor = UIColor(red: 216/255, green: 223/255, blue: 221/255, alpha: 1)
         self.contentView.addSubview(self.slotView)
-        slotView.snp.makeConstraints { (make) in
+        self.slotView.snp.makeConstraints { (make) in
             make.top.bottom.equalToSuperview().inset(8)
-            make.leading.trailing.equalToSuperview().inset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
+        self.items.append(flexSpace)
+        self.items.append(donButton)
+        self.doneToolBar.items = items
+        self.doneToolBar.sizeToFit()
+        self.costTextField.inputAccessoryView = doneToolBar
     }
+}
+
+//MARK:- Event
+extension AddBudgetEventTableViewCell {
+    @objc func userDidEndEditing(sender: UIBarButtonItem) {
+        self.costTextField.resignFirstResponder()
+    }
+    
+
+    
 }

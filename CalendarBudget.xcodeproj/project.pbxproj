@@ -10,6 +10,8 @@
 		0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */; };
 		04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */; };
 		045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045FFA2425B5A92B005121FF /* CalendarViewController.swift */; };
+		047616FE25C0003D0049EF7C /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047616FD25C0003D0049EF7C /* CategoryViewController.swift */; };
+		0476170125C01F030049EF7C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0476170025C01F030049EF7C /* CategoryTableViewCell.swift */; };
 		047ABB2F25BEDE5A0063BFEB /* BudgetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */; };
 		047ABB3225BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047ABB3125BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift */; };
 		04848EFE257699F300F2695B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04848EFD257699F300F2695B /* AppDelegate.swift */; };
@@ -29,6 +31,8 @@
 		0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEventTableViewCell.swift; sourceTree = "<group>"; };
 		04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteEventTableViewCell.swift; sourceTree = "<group>"; };
 		045FFA2425B5A92B005121FF /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		047616FD25C0003D0049EF7C /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		0476170025C01F030049EF7C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetTableViewCell.swift; sourceTree = "<group>"; };
 		047ABB3125BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetEventTableViewCell.swift; sourceTree = "<group>"; };
 		04848EFA257699F300F2695B /* CalendarBudget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarBudget.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +71,7 @@
 				04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */,
 				047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */,
 				047ABB3125BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift */,
+				0476170025C01F030049EF7C /* CategoryTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -80,6 +85,7 @@
 				04C35E7D2590D0AB0028BF75 /* AddNoteEventViewController.swift */,
 				04C35E842595B10B0028BF75 /* RepeatViewController.swift */,
 				04C35E8025930B010028BF75 /* AddBudgetEventViewController.swift */,
+				047616FD25C0003D0049EF7C /* CategoryViewController.swift */,
 				04867696257CA86A00EAAB2E /* SettingViewController.swift */,
 			);
 			path = ViewController;
@@ -251,6 +257,7 @@
 				045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */,
 				04848F02257699F300F2695B /* MainViewController.swift in Sources */,
 				04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */,
+				047616FE25C0003D0049EF7C /* CategoryViewController.swift in Sources */,
 				04867697257CA86A00EAAB2E /* SettingViewController.swift in Sources */,
 				0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */,
 				04C35E7E2590D0AB0028BF75 /* AddNoteEventViewController.swift in Sources */,
@@ -258,6 +265,7 @@
 				04C35E8125930B010028BF75 /* AddBudgetEventViewController.swift in Sources */,
 				04848EFE257699F300F2695B /* AppDelegate.swift in Sources */,
 				047ABB2F25BEDE5A0063BFEB /* BudgetTableViewCell.swift in Sources */,
+				0476170125C01F030049EF7C /* CategoryTableViewCell.swift in Sources */,
 				04C35E852595B10B0028BF75 /* RepeatViewController.swift in Sources */,
 				047ABB3225BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift in Sources */,
 			);

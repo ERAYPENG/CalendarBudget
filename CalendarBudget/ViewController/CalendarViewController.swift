@@ -27,12 +27,6 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
     }
     fileprivate weak var calendar: FSCalendar!
     let dateFormatter = DateFormatter()
-//    func sendPropertyFromCalendarVC(handler: @escaping () -> Void) {
-//        executeClosure = handler
-//        if let executeClosure = executeClosure {
-//            executeClosure()
-//        }
-//    }
     
     
     
@@ -57,26 +51,6 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         
         
         
-//        sendPropertyFromCalendarVC(handler: dateStringFromCalendarVC)
-//        func sendPropertyFromCalendarVC(handler: @escaping () -> Void) {
-//            executeClosure = handler
-//            if let today = calendar.today {
-//                dateStringFromCalendarVC = dateFormatter.string(from: today)
-//            }
-//            if let executeClosure = executeClosure {
-//                executeClosure()
-//            }
-//        }
-//        sendPropertyFromCalendarVC {
-//            <#code#>
-//        }
-//        func process() {
-//            if let executeClosure = executeClosure {
-//                executeClosure()
-//            }
-//        }
-//
-
 
         self.view.addSubview(calendar)
         
@@ -95,25 +69,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         MainViewController().noteTableView.reloadData()
 
         dateFormatter.dateFormat = "yyyy-MMM-dd"
-//        let selectDate = dateFormatter.string(from: date)
-//        print(selectDate)
         calendarVCDate = dateFormatter.string(from: date)
-//        print(dateStringFromCalendarVC)
-//        if let closure = self.executeClosure {
-//            print("dateStringFromCalendarVC")
-//            closure(calendarVCDate)
-//        }
-//        if let closure = self.executeClosure {
-//            closure(dateStringFromCalendarVC)
-//        }
-        
-//        self.reloadAllTableViews()
-//        if dateStringFromCalendarVC == decodeData[0].dateString {
-//
-//            print("decode success")
-//        }
-        
-//        self.calendar = calendar
         
     }
     

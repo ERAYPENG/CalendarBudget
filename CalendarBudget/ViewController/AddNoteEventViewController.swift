@@ -68,21 +68,6 @@ var decodeData = [AddNoteEventContent]()
 class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate, UITextFieldDelegate {
     
     public var executeClosure: (()->())?
-    
-//    enum monthEnum {
-//        case Jan
-//        case Feb
-//        case Mar
-//        case Apr
-//        case May
-//        case Jun
-//        case Jul
-//        case Aug
-//        case Sep
-//        case Oct
-//        case Nov
-//        case Dec
-//    }
 
     private var repeatValueFromRepeatViewController = "Never"
     var repeatViewControllerRowNumber: Int?
@@ -236,7 +221,7 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AddNoteEventTableViewCell.identifier, for: indexPath) as? AddNoteEventTableViewCell else {
-            return AddNoteEventTableViewCell(style: .default, reuseIdentifier: AddNoteEventTableViewCell.identifier)
+            return AddNoteEventTableViewCell(style: .subtitle, reuseIdentifier: AddNoteEventTableViewCell.identifier)
         }
         
         if indexPath.section == 0 {

@@ -37,7 +37,6 @@ class MainViewController: UIViewController {
     fileprivate var addEventDescription: String?
     fileprivate var addEventDate: String?
     fileprivate var addEventTime: String?
-    fileprivate var addEventRepeatValue: String?
     let dateFormatter = DateFormatter()
     let timeFormatter = DateFormatter()
     
@@ -164,7 +163,7 @@ class MainViewController: UIViewController {
         }
         pagerView.snp.makeConstraints { (make) in
             make.left.bottom.right.equalToSuperview()
-            make.height.equalTo(200)
+            make.height.equalTo(180)
         }
         pageControl.snp.makeConstraints { (make) in
             make.width.equalTo(80)
@@ -403,7 +402,9 @@ extension MainViewController {
     }
     @objc func addBudgetEvent(sender: UIButton){
         let budgetVC = AddBudgetEventViewController()
-        self.present(budgetVC, animated: true, completion: nil)
+        let addBudgetNav = UINavigationController(rootViewController: budgetVC)
+        addBudgetNav.modalTransitionStyle = .crossDissolve
+        self.present(addBudgetNav, animated: true, completion: nil)
     }
 
     
