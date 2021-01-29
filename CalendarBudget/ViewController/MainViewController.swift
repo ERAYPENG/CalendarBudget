@@ -13,6 +13,12 @@ class MainViewController: UIViewController {
     var executeClosure: (()->())?
     lazy var noteContent = [AddNoteEventContent]()
     lazy var budgetContent = [AddBudgetEventContent]()
+    private var foodContent = [AddBudgetEventContent]()
+    private var clothingContent = [AddBudgetEventContent]()
+    private var housingContent = [AddBudgetEventContent]()
+    private var transportationContent = [AddBudgetEventContent]()
+    private var educationContent = [AddBudgetEventContent]()
+    private var entertainmentContent = [AddBudgetEventContent]()
     let calendarVC = CalendarViewController()
     let pagerViewVC = PagerViewViewController()
     lazy var eventLabel: UILabel = {
@@ -236,6 +242,14 @@ class MainViewController: UIViewController {
     private func reloadAllTableViews() {
         noteContent = noteContentDecodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
         budgetContent = budgetContentDecodeData.filter({return $0.dateString == calendarVC.calendarVCDate})
+        
+        foodContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[0]})
+        clothingContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[1]})
+        housingContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[2]})
+        transportationContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[3]})
+        educationContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[4]})
+        entertainmentContent = budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[5]})
+
         self.noteTableView.reloadData()
         self.budgetTableView.reloadData()
     }
@@ -317,7 +331,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             }
             
         } else if tableView == budgetTableView {
-            return 1
+            return budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[section]}).count
         }
         return Int()
     }
@@ -358,8 +372,28 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BudgetTableViewCell.identifier) as? BudgetTableViewCell else {
                 return BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
             }
+            switch indexPath.section {
+            case 0:
+                cell.config(model: foodContent[indexPath.row])
+            case 1:
+                cell.config(model: clothingContent[indexPath.row])
+            case 2:
+                cell.config(model: housingContent[indexPath.row])
+            case 3:
+                cell.config(model: transportationContent[indexPath.row])
+            case 4:
+                cell.config(model: educationContent[indexPath.row])
+            case 5:
+                cell.config(model: entertainmentContent[indexPath.row])
+            default:
+                fatalError()
+            }
+            
+            
             cell.backgroundColor = .groupTableViewBackground
-            cell.config()
+            cell.config(model: budgetContent[indexPath.row])
+            
+            return cell
 //            cell.backgroundColor = .groupTableViewBackground
         }
         return UITableViewCell()
@@ -400,6 +434,9 @@ extension MainViewController {
     }
     @objc func addBudgetEvent(sender: UIButton){
         let budgetVC = AddBudgetEventViewController()
+        budgetVC.saveBudgetEventClosure = { (str) in
+            self.reloadAllTableViews()
+        }
         let addBudgetNav = UINavigationController(rootViewController: budgetVC)
         addBudgetNav.modalTransitionStyle = .crossDissolve
         self.present(addBudgetNav, animated: true, completion: nil)

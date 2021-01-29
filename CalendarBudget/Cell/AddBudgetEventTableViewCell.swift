@@ -9,6 +9,7 @@ import UIKit
 
 enum AddBudgetEventTableViewCellType {
     case category
+    case description
     case cost
 }
 
@@ -16,6 +17,7 @@ enum AddBudgetEventTableViewCellType {
 
 class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     public static var identifier = "AddBudgetEventTableViewCell"
+    var userDidEndEditingDescriptionTextFieldClosure: ((String)->())?
     var userDidEndEditingCostTextFieldClosure: ((Int)->())?
     private var userDidSelectCategoryValue: String = "Food"
     private var userDidEndEditinValue: Int = 0
@@ -26,6 +28,15 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     private var categoryTitleLabel: UILabel = {
         let label = UILabel()
         return label
+    }()
+    
+    private lazy var descriptionTextField: UITextField = {
+        let textField = UITextField()
+        textField.delegate = self
+        textField.clearButtonMode = .whileEditing
+        textField.returnKeyType = .done
+        textField.placeholder = "Add something"
+        return textField
     }()
     
     private lazy var costTextField: UITextField = {
@@ -44,11 +55,19 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         return false
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let intOfUserInput = Int(textField.text ?? "")
-        userDidEndEditinValue = intOfUserInput ?? 0
-        if let closure = self.userDidEndEditingCostTextFieldClosure {
-            closure(userDidEndEditinValue)
+        if textField == descriptionTextField {
+            let descriptionUserInput = textField.text ?? ""
+            if let closure = self.userDidEndEditingDescriptionTextFieldClosure {
+                closure(descriptionUserInput)
+            }
+        } else {
+            let intOfUserInput = Int(textField.text ?? "")
+            userDidEndEditinValue = intOfUserInput ?? 0
+            if let closure = self.userDidEndEditingCostTextFieldClosure {
+                closure(userDidEndEditinValue)
+            }
         }
+        
     }
     
     
@@ -89,6 +108,12 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
                 make.height.equalTo(44)
             }
             
+        case .description:
+            self.slotView.addSubview(self.descriptionTextField)
+            self.descriptionTextField.snp.makeConstraints { (make) in
+                make.edges.equalToSuperview()
+                make.height.equalTo(44)
+            }
         case .cost:
             self.slotView.addSubview(self.costTextField)
             self.costTextField.snp.makeConstraints { (make) in

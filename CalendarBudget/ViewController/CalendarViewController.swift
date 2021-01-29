@@ -46,7 +46,6 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         }
         
         
-        
 
         self.view.addSubview(calendar)
         
@@ -63,7 +62,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         calendarVCDate = dateFormatter.string(from: date)
         MainViewController().noteTableView.reloadData()
-        
+        MainViewController().budgetTableView.reloadData()
         dateFormatter.dateFormat = "yyyy-MMM-dd"
         calendarVCDate = dateFormatter.string(from: date)
         

@@ -13,6 +13,7 @@ enum BudgetTableViewCellType {
     case clothing
     case housing
     case transportation
+    case entertainment
 }
 
 class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
@@ -20,19 +21,15 @@ class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
     public var budgetEventUserInputText: String = ""
     public var budgetCostUserInputText: String = ""
     
-    private var slotView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
-        return view
-    }()
-    
     private var budgetEventLabel: UILabel = {
         let textField = UILabel()
+        textField.textColor = .black
         return textField
     }()
     
     private var budgetCostLabel: UILabel = {
         let textField = UILabel()
+        textField.textColor = .black
         return textField
     }()
 
@@ -46,18 +43,20 @@ class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func config() {
-        self.slotView.addSubview(self.budgetEventLabel)
-        self.slotView.addSubview(self.budgetCostLabel)
+    public func config(model: AddBudgetEventContent) {
+        self.contentView.addSubview(self.budgetEventLabel)
+        self.contentView.addSubview(self.budgetCostLabel)
             
         self.budgetEventLabel.snp.makeConstraints { (make) in
-                make.edges.equalToSuperview()
-                make.height.equalTo(44)
+            make.leading.equalToSuperview().offset(20)
+            make.centerY.equalToSuperview()
             }
         self.budgetCostLabel.snp.makeConstraints { (make) in
-                make.edges.equalToSuperview()
-                make.height.equalTo(44)
+            make.trailing.equalToSuperview().offset(-20)
+            make.centerY.equalToSuperview()
             }
+        self.budgetEventLabel.text = model.descriptionValueString
+        self.budgetCostLabel.text = String(model.costValueInt)
         
     }
     
@@ -66,10 +65,7 @@ class BudgetTableViewCell: UITableViewCell, UITextFieldDelegate {
 //MARK:- private
 extension BudgetTableViewCell {
     private func setupUI() {
-        self.contentView.addSubview(self.slotView)
-        self.slotView.snp.makeConstraints { (make) in
-            make.top.bottom.equalToSuperview().inset(8)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
+        self.budgetEventLabel.textColor = .darkText
+        self.budgetCostLabel.textColor = .darkText
     }
 }

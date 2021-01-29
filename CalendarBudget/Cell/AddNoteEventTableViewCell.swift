@@ -171,7 +171,7 @@ extension AddNoteEventTableViewCell {
     private func sendPickerValue(from datePicker: UIDatePicker) {
         userPickDate = dateFormatter.string(from: datePicker.date)
         userPickTime = timeFormatter.string(from: datePicker.date)
-        if let closure = userPickDateClosure {
+        if let closure = self.userPickDateClosure {
             closure(userPickDate ?? "", userPickTime ?? "")
         }
     }
