@@ -10,6 +10,9 @@
 		0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */; };
 		04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */; };
 		045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045FFA2425B5A92B005121FF /* CalendarViewController.swift */; };
+		0471A47625C68F0900687571 /* AddBudgetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471A47525C68F0900687571 /* AddBudgetModel.swift */; };
+		0471A47B25C69F3400687571 /* UIColor+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471A47A25C69F3400687571 /* UIColor+Common.swift */; };
+		0471A48225C6A8CD00687571 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0471A48125C6A8CD00687571 /* BaseViewController.swift */; };
 		047616FE25C0003D0049EF7C /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047616FD25C0003D0049EF7C /* CategoryViewController.swift */; };
 		0476170125C01F030049EF7C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0476170025C01F030049EF7C /* CategoryTableViewCell.swift */; };
 		047ABB2F25BEDE5A0063BFEB /* BudgetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */; };
@@ -31,6 +34,9 @@
 		0403EFB525B0702000302D33 /* NoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEventTableViewCell.swift; sourceTree = "<group>"; };
 		04128BCE25BC5790007DF5CF /* AddNoteEventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteEventTableViewCell.swift; sourceTree = "<group>"; };
 		045FFA2425B5A92B005121FF /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		0471A47525C68F0900687571 /* AddBudgetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetModel.swift; sourceTree = "<group>"; };
+		0471A47A25C69F3400687571 /* UIColor+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Common.swift"; sourceTree = "<group>"; };
+		0471A48125C6A8CD00687571 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		047616FD25C0003D0049EF7C /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		0476170025C01F030049EF7C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetTableViewCell.swift; sourceTree = "<group>"; };
@@ -91,6 +97,42 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		0471A47425C68EEB00687571 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0471A47525C68F0900687571 /* AddBudgetModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0471A47D25C6A7D900687571 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				0471A47A25C69F3400687571 /* UIColor+Common.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		0471A47E25C6A7F100687571 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				04848EFD257699F300F2695B /* AppDelegate.swift */,
+				04848F03257699F300F2695B /* Main.storyboard */,
+				04848F06257699F400F2695B /* Assets.xcassets */,
+				04848F08257699F400F2695B /* LaunchScreen.storyboard */,
+				04848F0B257699F400F2695B /* Info.plist */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		0471A47F25C6A81400687571 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				0471A48125C6A8CD00687571 /* BaseViewController.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
 		04848EF1257699F200F2695B = {
 			isa = PBXGroup;
 			children = (
@@ -112,13 +154,12 @@
 		04848EFC257699F300F2695B /* CalendarBudget */ = {
 			isa = PBXGroup;
 			children = (
+				0471A47F25C6A81400687571 /* Base */,
+				0471A47D25C6A7D900687571 /* Extension */,
 				0403EFB925B0740C00302D33 /* ViewController */,
 				0403EFB825B0740100302D33 /* Cell */,
-				04848EFD257699F300F2695B /* AppDelegate.swift */,
-				04848F03257699F300F2695B /* Main.storyboard */,
-				04848F06257699F400F2695B /* Assets.xcassets */,
-				04848F08257699F400F2695B /* LaunchScreen.storyboard */,
-				04848F0B257699F400F2695B /* Info.plist */,
+				0471A47425C68EEB00687571 /* Model */,
+				0471A47E25C6A7F100687571 /* Common */,
 			);
 			path = CalendarBudget;
 			sourceTree = "<group>";
@@ -254,12 +295,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0471A47B25C69F3400687571 /* UIColor+Common.swift in Sources */,
 				045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */,
 				04848F02257699F300F2695B /* MainViewController.swift in Sources */,
 				04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */,
 				047616FE25C0003D0049EF7C /* CategoryViewController.swift in Sources */,
 				04867697257CA86A00EAAB2E /* SettingViewController.swift in Sources */,
 				0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */,
+				0471A48225C6A8CD00687571 /* BaseViewController.swift in Sources */,
 				04C35E7E2590D0AB0028BF75 /* AddNoteEventViewController.swift in Sources */,
 				04DCF72625B827A300C4D237 /* PagerViewViewController.swift in Sources */,
 				04C35E8125930B010028BF75 /* AddBudgetEventViewController.swift in Sources */,
@@ -267,6 +310,7 @@
 				047ABB2F25BEDE5A0063BFEB /* BudgetTableViewCell.swift in Sources */,
 				0476170125C01F030049EF7C /* CategoryTableViewCell.swift in Sources */,
 				04C35E852595B10B0028BF75 /* RepeatViewController.swift in Sources */,
+				0471A47625C68F0900687571 /* AddBudgetModel.swift in Sources */,
 				047ABB3225BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,7 +461,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L9M7QA5C39;
-				INFOPLIST_FILE = CalendarBudget/Info.plist;
+				INFOPLIST_FILE = CalendarBudget/Common/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -438,7 +482,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L9M7QA5C39;
-				INFOPLIST_FILE = CalendarBudget/Info.plist;
+				INFOPLIST_FILE = CalendarBudget/Common/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

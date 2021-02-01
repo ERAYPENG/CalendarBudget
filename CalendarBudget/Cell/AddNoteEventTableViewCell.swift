@@ -114,6 +114,9 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     public func config(type: AddNoteEventTableViewCellType) {
+        self.slotView.subviews.forEach { (view) in
+            view.removeFromSuperview()
+        }
         switch type {
         case .textfield:
             self.slotView.addSubview(self.descriptionInputTextField)

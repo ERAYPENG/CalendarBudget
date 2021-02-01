@@ -13,9 +13,15 @@ import UIKit
 }
 
 class CategoryViewController: UIViewController {
+    
+    public static let defaultCategoryIndex = 0
+    
     var categoryVCDelegate: CategoryVCDelegate?
-    var userDidSelectCategoyClosure: ((String)->())?
-    var userIndex: Int?
+    
+    var userDidSelectCategoyClosure: ((Int)->())?
+    
+    public var userIndex: Int = CategoryViewController.defaultCategoryIndex
+    
     lazy var categoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -25,15 +31,13 @@ class CategoryViewController: UIViewController {
         return tableView
     }()
     
-    var budgetTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let closure = self.userDidSelectCategoyClosure {
-            closure(budgetTitle[0])
-        }
+        
+        if let closure = self.userDidSelectCategoyClosure { closure(userIndex) }
+        
         self.view.backgroundColor = .groupTableViewBackground
         self.view.addSubview(self.categoryTableView)
-        
         
         self.categoryTableView.snp.makeConstraints { (make) in
             make.top.equalToSuperview()
@@ -51,7 +55,7 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
         return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return budgetTitle.count
+        return budgetTitles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,32 +64,26 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource {
             return CategoryTableViewCell(style: .subtitle, reuseIdentifier: CategoryTableViewCell.identifier)
         }
         cell.config(row: indexPath.row)
-        if userIndex == nil {
-            if indexPath.row == 0 {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
+        
+        if userIndex == indexPath.row {
+            cell.accessoryType = .checkmark
         } else {
-            if userIndex == indexPath.row {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
+            cell.accessoryType = .none
         }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //UI logic
         self.userIndex = indexPath.row
         tableView.reloadData()
-        let str = budgetTitle[self.userIndex ?? 0]
-        if let closure = self.userDidSelectCategoyClosure {
-            closure(str)
-        }
-        self.categoryVCDelegate?.userDidSelectCategoryRowNum(row: indexPath.row)
         
+        //model logic
+        if let closure = self.userDidSelectCategoyClosure {
+            closure(self.userIndex)
+        }
+        self.categoryVCDelegate?.userDidSelectCategoryRowNum(row: self.userIndex)
     }
     
     

@@ -9,4 +9,5 @@ target 'CalendarBudget' do
 pod 'SnapKit', '~> 5.0.0'
 pod 'FSCalendar'
 pod 'FSPagerView'
+pod 'GuillotineMenu'
 end

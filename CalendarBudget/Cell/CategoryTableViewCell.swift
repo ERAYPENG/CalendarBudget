@@ -18,7 +18,7 @@ class CategoryTableViewCell: UITableViewCell {
         let label = UILabel()
         return label
     }()
-    var budgetTitle = ["Food", "Clothing", "Housing", "Transportation", "Education", "Entertainment"]
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupUI()
@@ -29,8 +29,10 @@ class CategoryTableViewCell: UITableViewCell {
     }
     
     public func config(row: Int) {
-        
-        self.categoryLabel.text = budgetTitle[row]
+        self.slotView.subviews.forEach { (view) in
+            view.removeFromSuperview()
+        }
+        self.categoryLabel.text = budgetTitles[row]
         self.slotView.addSubview(self.categoryLabel)
         self.categoryLabel.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()

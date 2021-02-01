@@ -67,5 +67,16 @@ extension BudgetTableViewCell {
     private func setupUI() {
         self.budgetEventLabel.textColor = .darkText
         self.budgetCostLabel.textColor = .darkText
+        
+        let separateLine = UIView()
+        separateLine.backgroundColor = .black
+        self.contentView.addSubview(separateLine)
+        
+        separateLine.snp.makeConstraints { (make) in
+            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview()
+            make.height.equalTo(0.8)
+        }
     }
 }

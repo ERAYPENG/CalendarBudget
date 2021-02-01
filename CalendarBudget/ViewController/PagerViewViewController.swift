@@ -93,7 +93,8 @@ extension PagerViewViewController: FSPagerViewDelegate,FSPagerViewDataSource{
         if let closure = self.executeClosure {
             closure(targetIndex)
         }
-        
+        let mainVC = MainViewController()
+        mainVC.budgetTableView.reloadData()
     }
     
     

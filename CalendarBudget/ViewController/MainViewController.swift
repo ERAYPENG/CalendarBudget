@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import FSPagerView
+import GuillotineMenu
 
 class MainViewController: UIViewController {
     var executeClosure: (()->())?
@@ -19,12 +20,10 @@ class MainViewController: UIViewController {
     private var transportationContent = [AddBudgetEventContent]()
     private var educationContent = [AddBudgetEventContent]()
     private var entertainmentContent = [AddBudgetEventContent]()
+    fileprivate lazy var presentationAnimator = GuillotineTransitionAnimation()
     let calendarVC = CalendarViewController()
     let pagerViewVC = PagerViewViewController()
-    lazy var eventLabel: UILabel = {
-        let eventLabel = UILabel()
-        return eventLabel
-    }()
+    let settingVC = SettingViewController()
     
     
     public var foodEventUserInputTest: String = ""
@@ -53,6 +52,7 @@ class MainViewController: UIViewController {
         noteTableView.dataSource = self
         noteTableView.delegate = self
         noteTableView.register(NoteEventTableViewCell.self, forCellReuseIdentifier: NoteEventTableViewCell.identifier)
+        noteTableView.separatorStyle = .none
         return noteTableView
     }()
     
@@ -62,6 +62,7 @@ class MainViewController: UIViewController {
         budgetTableView.dataSource = self
         budgetTableView.delegate = self
         budgetTableView.register(BudgetTableViewCell.self, forCellReuseIdentifier: BudgetTableViewCell.identifier)
+        budgetTableView.separatorStyle = .none
         return budgetTableView
     }()
     
@@ -79,8 +80,6 @@ class MainViewController: UIViewController {
         addBudgetButton.addTarget(self, action: #selector(addBudgetEvent), for: .touchUpInside)
         return addBudgetButton
     }()
-    
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -143,13 +142,6 @@ class MainViewController: UIViewController {
 
         
 //MARK:- AutoLayout
-//        calendarView.snp.makeConstraints { (make) in
-//            make.leading.equalToSuperview()
-//            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-//            make.trailing.equalToSuperview()
-//            make.height.equalTo(self.view).dividedBy(3)
-//        }
-        
         calendarVC.view.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -196,46 +188,13 @@ class MainViewController: UIViewController {
         }
         budgetTableView.snp.makeConstraints { (make) in
             make.top.equalTo(yellowBlock.snp.top)
-//            make.top.equalTo(calendar.snp.bottom)
             make.width.equalToSuperview()
             make.bottom.equalTo(pagerView.snp.top)
         }
 }
-//    //Dowcasting
-//    //1.檢查 instance type
-//    let a: Any? = "1"
-//    //2.optional
-//    let b: String? = nil
-//
+
     override func viewDidLayoutSubviews() {
         self.applyCurvedPath(givenView: yellowBlock,curvedPercent: 0.2)
-//        //1.檢查 instance type
-//        if
-//            let bObject = self.a as? String {
-//            print(bObject)
-//        }
-//
-//        guard
-//            let a1Object = self.a as? String
-//        else {
-//            //fail downcasting
-//            return
-//        }
-//        print(a1Object)
-//
-//        //2.optional
-//        if let bObject = b { // b != nil 進 block, b == nil 不進 block
-//            print(bObject)
-//        }
-//
-//        guard
-//            let a2Object = self.b
-//        else {
-//            //b == nil
-//            return
-//        }
-//        // b != nil
-//        print(a2Object)
     }
     
         
@@ -261,15 +220,19 @@ class MainViewController: UIViewController {
 extension MainViewController {
     private func setupUI() {
         self.view.backgroundColor = .groupTableViewBackground
+        let navBar = self.navigationController?.navigationBar
+        navBar?.barTintColor = .gray
+        navBar?.titleTextAttributes = [.foregroundColor: UIColor.black]
+
         let settingButton = UIButton()
         settingButton.setImage(UIImage(named: "cogwheel"), for:.normal)
-        settingButton.addTarget(self, action: #selector(settingButtonDidTouchUpInside(sender:)), for: .touchUpInside)
+        settingButton.addTarget(self, action: #selector(menuDropDown), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: settingButton)
         let currWidth = rightBarButton.customView?.widthAnchor.constraint(equalToConstant: 24)
             currWidth?.isActive = true
         let currHeight = rightBarButton.customView?.heightAnchor.constraint(equalToConstant: 24)
             currHeight?.isActive = true
-        navigationItem.rightBarButtonItem = rightBarButton
+        navigationItem.leftBarButtonItem = rightBarButton
     }
     
     func pathCurvedForView(givenView: UIView, curvedPercent:CGFloat) ->UIBezierPath
@@ -312,7 +275,11 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
         case noteTableView:
             return noteSectionTitle.count
         case budgetTableView:
-            return budgetSectionTitle.count
+            if budgetContent.count == 0 {
+                return 1
+            } else {
+                return budgetSectionTitle.count
+            }
         default:
             fatalError("Invalid Table")
         }
@@ -331,33 +298,42 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             }
             
         } else if tableView == budgetTableView {
-            return budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[section]}).count
+            if budgetContent.count == 0 {
+                return 1
+            } else {
+                return budgetContent.filter({return $0.categoryValueString == budgetSectionTitle[section]}).count
+
+            }
         }
         return Int()
     }
     
-    
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
 
-        tableView.rowHeight = 44
         if tableView == noteTableView {
 
             if noteContent.count == 0 {
                 let cell = UITableViewCell()
+                cell.selectionStyle = .none
                 cell.textLabel?.text = "Add something..."
                 cell.textLabel?.textColor = .lightGray
                 cell.backgroundColor = .groupTableViewBackground
-//                eventTimeLabel.isHidden = true
-                return cell
-                                
                 
-
+                let separatorLine = UIView()
+                separatorLine.backgroundColor = UIColor.hex("005073")
+                cell.contentView.addSubview(separatorLine)
+                separatorLine.snp.makeConstraints { (make) in
+                    make.bottom.equalToSuperview()
+                    make.leading.equalToSuperview().offset(16)
+                    make.trailing.equalToSuperview().offset(0)
+                    make.height.equalTo(1)
+                }
+                
+                return cell
+                
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteEventTableViewCell.identifier) as? NoteEventTableViewCell else {
                     let noteCell = NoteEventTableViewCell(style: .subtitle, reuseIdentifier: NoteEventTableViewCell.identifier)
-//                    noteCell.config(model: noteContent[indexPath.row])
                     return noteCell
                 }
                 cell.backgroundColor = .groupTableViewBackground
@@ -369,35 +345,53 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
             
             
         } else if tableView == budgetTableView {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: BudgetTableViewCell.identifier) as? BudgetTableViewCell else {
-                return BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
+            if budgetContent.count == 0 {
+                let cell = UITableViewCell()
+                cell.selectionStyle = .none
+                cell.textLabel?.text = "Add something..."
+                cell.textLabel?.textColor = .lightGray
+                cell.backgroundColor = .groupTableViewBackground
+                
+                let separatorLine = UIView()
+                separatorLine.backgroundColor = UIColor.hex("005073")
+                cell.contentView.addSubview(separatorLine)
+                separatorLine.snp.makeConstraints { (make) in
+                    make.bottom.equalToSuperview()
+                    make.leading.equalToSuperview().offset(16)
+                    make.trailing.equalToSuperview().offset(0)
+                    make.height.equalTo(1)
+                }
+                
+                return cell
+                
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: BudgetTableViewCell.identifier) as? BudgetTableViewCell else {
+                    return BudgetTableViewCell(style: .subtitle, reuseIdentifier: BudgetTableViewCell.identifier)
+                }
+                switch indexPath.section {
+                case 0:
+                    cell.config(model: foodContent[indexPath.row])
+                case 1:
+                    cell.config(model: clothingContent[indexPath.row])
+                case 2:
+                    cell.config(model: housingContent[indexPath.row])
+                case 3:
+                    cell.config(model: transportationContent[indexPath.row])
+                case 4:
+                    cell.config(model: educationContent[indexPath.row])
+                case 5:
+                    cell.config(model: entertainmentContent[indexPath.row])
+                default:
+                    fatalError()
+                }
+                cell.backgroundColor = .groupTableViewBackground
+                return cell
             }
-            switch indexPath.section {
-            case 0:
-                cell.config(model: foodContent[indexPath.row])
-            case 1:
-                cell.config(model: clothingContent[indexPath.row])
-            case 2:
-                cell.config(model: housingContent[indexPath.row])
-            case 3:
-                cell.config(model: transportationContent[indexPath.row])
-            case 4:
-                cell.config(model: educationContent[indexPath.row])
-            case 5:
-                cell.config(model: entertainmentContent[indexPath.row])
-            default:
-                fatalError()
-            }
-            
-            
-            cell.backgroundColor = .groupTableViewBackground
-            cell.config(model: budgetContent[indexPath.row])
-            
-            return cell
-//            cell.backgroundColor = .groupTableViewBackground
         }
+            
         return UITableViewCell()
     }
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if tableView == noteTableView {
             return "To do"
@@ -407,20 +401,55 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
         return String()
     }
     
-    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if tableView == budgetTableView {
+            if section == 0 {
+                if foodContent.count == 0 {
+                    return 0
+                }
+            } else  if section == 1 {
+                if clothingContent.count == 0 {
+                    return 0
+                }
+            } else  if section == 2 {
+                if housingContent.count == 0 {
+                    return 0
+                }
+            } else  if section == 3 {
+                if transportationContent.count == 0 {
+                    return 0
+                }
+            } else  if section == 4 {
+                if educationContent.count == 0 {
+                    return 0
+                }
+            } else  if section == 5 {
+                if entertainmentContent.count == 0 {
+                    return 0
+                }
+            }
+            
+        }
+        
+        return UITableView.automaticDimension
+    }
 }
-
+//MARK: GuillotineMenu
+extension MainViewController: UIViewControllerTransitioningDelegate {
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        presentationAnimator.mode = .presentation
+        return presentationAnimator
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        presentationAnimator.mode = .dismissal
+        return presentationAnimator
+    }
+}
 
 //MARK:- Events
 extension MainViewController {
-    
-
-    
-    @objc func settingButtonDidTouchUpInside(sender: UIButton) {
-        let settingVC = SettingViewController()
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    }
-    
     @objc func addNoteEvent(sender: UIButton){
         let noteVC = AddNoteEventViewController()
         noteVC.executeClosure = {
@@ -443,6 +472,23 @@ extension MainViewController {
         budgetVC.dateString = addBudgetEventDate
     }
     
+    @objc func menuDropDown(sender: UIButton) {
+//        let storyboard = UIStoryboard(name: "Menu", bundle: nil)
+        let menuViewController = SettingViewController()
+        menuViewController.modalPresentationStyle = .custom
+        menuViewController.transitioningDelegate = self
+        
+        
+        
+        presentationAnimator.animationDelegate = menuViewController as? GuillotineAnimationDelegate
+        presentationAnimator.supportView = navigationController!.navigationBar
+        presentationAnimator.presentButton = sender
+        presentationAnimator.animationDuration = 0.15
+        
+        present(menuViewController, animated: true, completion: nil)
+    }
 }
+
+
 
 

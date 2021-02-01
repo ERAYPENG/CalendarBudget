@@ -25,11 +25,12 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
     private var userDidSelectRowNum: Int = 0
     let mainVC = MainViewController()
     let calenderVC = CalendarViewController()
-    let categoryVC = CategoryViewController()
-    var dateString: String = ""
-    var categoryValueString: String = "Food"
-    var costValue: Int = 0
-    var addBudgetEventTitle = ["Category", "Description", "Cost"]
+
+//    lazy var categoryVC: CategoryViewController = {
+//
+//        return categoryVC
+//    }()
+    
     lazy var addBudgetEventTableView: UITableView = {
         let tableView = UITableView()
         tableView.delegate = self
@@ -38,6 +39,13 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
         tableView.tableFooterView = UIView()
         return tableView
     }()
+    
+    private var addBudgetEventTitle = ["Category", "Description", "Cost"]
+    
+    //cell values
+    private lazy var categoryValueString: String = budgetTitles[0]
+    public var dateString: String = ""
+    private var costValue: Int = 0
     
     lazy var saveButton: UIButton = {
         let button = UIButton()
@@ -73,7 +81,6 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .groupTableViewBackground
-        categoryVC.categoryVCDelegate = self
         self.view.addSubview(addBudgetEventTableView)
         self.view.addSubview(saveButton)
         self.view.addSubview(cancelButton)
@@ -111,9 +118,6 @@ class AddBudgetEventViewController: UIViewController, CategoryVCDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        categoryVC.userDidSelectCategoyClosure = { (str) in
-            self.categoryValueString = str
-        }
         print("add budget view appear")
     }
     
@@ -160,28 +164,34 @@ extension AddBudgetEventViewController: UITableViewDataSource, UITableViewDelega
             return AddBudgetEventTableViewCell(style: .subtitle, reuseIdentifier: AddBudgetEventTableViewCell.identifier)
         }
         if indexPath.section == 0 {
-            cell.config(type: AddBudgetEventTableViewCellType.category)
+            cell.config(type: AddBudgetEventTableViewCellType.category, content: self.categoryValueString)
         } else if indexPath.section == 1 {
-            cell.config(type: AddBudgetEventTableViewCellType.description)
+            cell.config(type: AddBudgetEventTableViewCellType.description, content: "")
             cell.userDidEndEditingDescriptionTextFieldClosure = { (str) in
                 self.addBudgetEventDescriptionValue = str
             }
         } else if indexPath.section == 2 {
-            cell.config(type: AddBudgetEventTableViewCellType.cost)
+            cell.config(type: AddBudgetEventTableViewCellType.cost, content: "")
             cell.userDidEndEditingCostTextFieldClosure = { (int) in
                 self.addBudgetEventCostValue = int
             }
         }
         
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
         if indexPath.row == 0 {
-            self.navigationController?.pushViewController(categoryVC, animated: true)
-            categoryVC.userIndex = userDidSelectRowNum
-            
+            let vc = CategoryViewController()
+            vc.categoryVCDelegate = self
+            vc.userDidSelectCategoyClosure = { (index) in
+                //given default value = Food in CategoryViewController
+                self.categoryValueString = budgetTitles[index]
+                self.addBudgetEventTableView.reloadData()
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+            vc.userIndex = userDidSelectRowNum
         }
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

@@ -25,7 +25,8 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         let view = UIView()
         return view
     }()
-    private var categoryTitleLabel: UILabel = {
+    
+    private lazy var categoryTitleLabel: UILabel = {
         let label = UILabel()
         return label
     }()
@@ -49,29 +50,6 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         return textField
     }()
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        self.endEditing(true)
-        return false
-    }
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField == descriptionTextField {
-            let descriptionUserInput = textField.text ?? ""
-            if let closure = self.userDidEndEditingDescriptionTextFieldClosure {
-                closure(descriptionUserInput)
-            }
-        } else {
-            let intOfUserInput = Int(textField.text ?? "")
-            userDidEndEditinValue = intOfUserInput ?? 0
-            if let closure = self.userDidEndEditingCostTextFieldClosure {
-                closure(userDidEndEditinValue)
-            }
-        }
-        
-    }
-    
-    
-    
     lazy var doneToolBar: UIToolbar = {
         let bar = UIToolbar()
         bar.barStyle = .blackTranslucent
@@ -85,22 +63,26 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     lazy var items = [UIBarButtonItem]()
     
+    private var contentString: String = ""
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupUI()
-        
-        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func config(type: AddBudgetEventTableViewCellType) {
-
+    public func config(type: AddBudgetEventTableViewCellType, content: String) {
+        
+        self.slotView.subviews.forEach { (view) in
+            view.removeFromSuperview()
+        }
+        
         switch type {
         case .category:
-            self.categoryTitleLabel.text = userDidSelectCategoryValue
+            self.categoryTitleLabel.text = content
             self.accessoryType = .disclosureIndicator
             self.slotView.addSubview(self.categoryTitleLabel)
             self.categoryTitleLabel.snp.makeConstraints { (make) in
@@ -109,6 +91,7 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
             }
             
         case .description:
+//            descriptionTextField
             self.slotView.addSubview(self.descriptionTextField)
             self.descriptionTextField.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
@@ -148,7 +131,29 @@ extension AddBudgetEventTableViewCell {
     @objc func userDidEndEditing(sender: UIBarButtonItem) {
         self.costTextField.resignFirstResponder()
     }
-    
+}
 
+//MARK:- TextfieldDelegate
+extension AddBudgetEventTableViewCell {
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.endEditing(true)
+        return false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == descriptionTextField {
+            let descriptionUserInput = textField.text ?? ""
+            if let closure = self.userDidEndEditingDescriptionTextFieldClosure {
+                closure(descriptionUserInput)
+            }
+        } else {
+            let intOfUserInput = Int(textField.text ?? "")
+            userDidEndEditinValue = intOfUserInput ?? 0
+            if let closure = self.userDidEndEditingCostTextFieldClosure {
+                closure(userDidEndEditinValue)
+            }
+        }
+        
+    }
 }
