@@ -344,6 +344,9 @@ extension AddNoteEventViewController {
             closure()
         }
         
+        let mainVC = MainViewController()
+        mainVC.reloadInputViews()
+        
     }
     
 

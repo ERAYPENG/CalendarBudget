@@ -14,3 +14,4 @@ public var budgetTitles = ["Food",
                             "Education",
                             "Entertainment"]
 
+public var userinputBudgetValue: String = ""

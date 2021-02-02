@@ -21,7 +21,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
             }
         }
     }
-    fileprivate weak var calendar: FSCalendar!
+    var calendar: FSCalendar!
     let dateFormatter = DateFormatter()
     
     
@@ -41,6 +41,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         calendar.appearance.todayColor = .systemRed
         calendar.appearance.titleTodayColor = .black
         calendar.appearance.titleDefaultColor = .red
+        calendar.appearance.eventDefaultColor = .black
         if let today = calendar.today {
             calendarVCDate = dateFormatter.string(from: today)
         }
@@ -59,6 +60,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         }
     }
     
+    
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         calendarVCDate = dateFormatter.string(from: date)
         MainViewController().noteTableView.reloadData()
@@ -69,6 +71,14 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
     }
     
 
-
+    
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        let dateString = dateFormatter.string(from: date)
+        if noteContentDecodeData.contains(where: {$0.dateString == dateString}) {
+            return 1
+        } else {
+            return 0
+        }
+    }
 }
 

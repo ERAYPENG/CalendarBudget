@@ -129,7 +129,6 @@ class MainViewController: UIViewController {
         
         addChild(calendarVC)
         view.addSubview(calendarVC.view)
-
         view.addSubview(yellowBlock)
         self.view.addSubview(pagerView)
         self.view.addSubview(pageControl)
@@ -454,11 +453,11 @@ extension MainViewController {
         let noteVC = AddNoteEventViewController()
         noteVC.executeClosure = {
             self.reloadAllTableViews()
+            self.calendarVC.calendar.reloadData()
         }
         let addNoteNav = UINavigationController(rootViewController: noteVC)
         addNoteNav.modalTransitionStyle = .crossDissolve
         self.present(addNoteNav, animated: true, completion: nil)
-        
 
     }
     @objc func addBudgetEvent(sender: UIButton){
