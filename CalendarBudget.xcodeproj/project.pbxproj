@@ -26,6 +26,13 @@
 		04C35E7E2590D0AB0028BF75 /* AddNoteEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C35E7D2590D0AB0028BF75 /* AddNoteEventViewController.swift */; };
 		04C35E8125930B010028BF75 /* AddBudgetEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C35E8025930B010028BF75 /* AddBudgetEventViewController.swift */; };
 		04C35E852595B10B0028BF75 /* RepeatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C35E842595B10B0028BF75 /* RepeatViewController.swift */; };
+		04D278B625F3576B00EC692F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04D278B525F3576B00EC692F /* GoogleService-Info.plist */; };
+		04D278FD25F35C3B00EC692F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D278FC25F35C3B00EC692F /* LoginViewController.swift */; };
+		04D2790025F35E2400EC692F /* LoginTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D278FF25F35E2400EC692F /* LoginTextfield.swift */; };
+		04D2791825F360C900EC692F /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D2791725F360C900EC692F /* RegisterViewController.swift */; };
+		04D2794625F36DA900EC692F /* LoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D2794525F36DA900EC692F /* LoadingIndicator.swift */; };
+		04D2794925F37C7D00EC692F /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D2794825F37C7D00EC692F /* FirebaseManager.swift */; };
+		04D6E88125F5076C00D29FA5 /* ItemPagerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D6E88025F5076C00D29FA5 /* ItemPagerViewCell.swift */; };
 		04DCF72625B827A300C4D237 /* PagerViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DCF72525B827A300C4D237 /* PagerViewViewController.swift */; };
 		F4940163E3D9BE645E81ECA1 /* Pods_CalendarBudget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E7D3F8A24896EC7DD4C313 /* Pods_CalendarBudget.framework */; };
 /* End PBXBuildFile section */
@@ -52,6 +59,13 @@
 		04C35E7D2590D0AB0028BF75 /* AddNoteEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteEventViewController.swift; sourceTree = "<group>"; };
 		04C35E8025930B010028BF75 /* AddBudgetEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetEventViewController.swift; sourceTree = "<group>"; };
 		04C35E842595B10B0028BF75 /* RepeatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatViewController.swift; sourceTree = "<group>"; };
+		04D278B525F3576B00EC692F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		04D278FC25F35C3B00EC692F /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		04D278FF25F35E2400EC692F /* LoginTextfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextfield.swift; sourceTree = "<group>"; };
+		04D2791725F360C900EC692F /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		04D2794525F36DA900EC692F /* LoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicator.swift; sourceTree = "<group>"; };
+		04D2794825F37C7D00EC692F /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		04D6E88025F5076C00D29FA5 /* ItemPagerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPagerViewCell.swift; sourceTree = "<group>"; };
 		04DCF72525B827A300C4D237 /* PagerViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerViewViewController.swift; sourceTree = "<group>"; };
 		1471A090A6C45F11F6F61EA9 /* Pods-CalendarBudget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarBudget.debug.xcconfig"; path = "Target Support Files/Pods-CalendarBudget/Pods-CalendarBudget.debug.xcconfig"; sourceTree = "<group>"; };
 		A7E7D3F8A24896EC7DD4C313 /* Pods_CalendarBudget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CalendarBudget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +92,7 @@
 				047ABB2E25BEDE5A0063BFEB /* BudgetTableViewCell.swift */,
 				047ABB3125BEF7C50063BFEB /* AddBudgetEventTableViewCell.swift */,
 				0476170025C01F030049EF7C /* CategoryTableViewCell.swift */,
+				04D6E88025F5076C00D29FA5 /* ItemPagerViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -121,6 +136,7 @@
 				04848F06257699F400F2695B /* Assets.xcassets */,
 				04848F08257699F400F2695B /* LaunchScreen.storyboard */,
 				04848F0B257699F400F2695B /* Info.plist */,
+				04D278B525F3576B00EC692F /* GoogleService-Info.plist */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -154,6 +170,7 @@
 		04848EFC257699F300F2695B /* CalendarBudget */ = {
 			isa = PBXGroup;
 			children = (
+				04D2792E25F36D7000EC692F /* Login */,
 				0471A47F25C6A81400687571 /* Base */,
 				0471A47D25C6A7D900687571 /* Extension */,
 				0403EFB925B0740C00302D33 /* ViewController */,
@@ -162,6 +179,18 @@
 				0471A47E25C6A7F100687571 /* Common */,
 			);
 			path = CalendarBudget;
+			sourceTree = "<group>";
+		};
+		04D2792E25F36D7000EC692F /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				04D278FC25F35C3B00EC692F /* LoginViewController.swift */,
+				04D2791725F360C900EC692F /* RegisterViewController.swift */,
+				04D278FF25F35E2400EC692F /* LoginTextfield.swift */,
+				04D2794525F36DA900EC692F /* LoadingIndicator.swift */,
+				04D2794825F37C7D00EC692F /* FirebaseManager.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 		08FA029423976B3238F81136 /* Pods */ = {
@@ -241,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04848F0A257699F400F2695B /* LaunchScreen.storyboard in Resources */,
+				04D278B625F3576B00EC692F /* GoogleService-Info.plist in Resources */,
 				04848F07257699F400F2695B /* Assets.xcassets in Resources */,
 				04848F05257699F300F2695B /* Main.storyboard in Resources */,
 			);
@@ -295,18 +325,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04D278FD25F35C3B00EC692F /* LoginViewController.swift in Sources */,
 				0471A47B25C69F3400687571 /* UIColor+Common.swift in Sources */,
 				045FFA2525B5A92B005121FF /* CalendarViewController.swift in Sources */,
+				04D6E88125F5076C00D29FA5 /* ItemPagerViewCell.swift in Sources */,
+				04D2794625F36DA900EC692F /* LoadingIndicator.swift in Sources */,
 				04848F02257699F300F2695B /* MainViewController.swift in Sources */,
 				04128BCF25BC5790007DF5CF /* AddNoteEventTableViewCell.swift in Sources */,
 				047616FE25C0003D0049EF7C /* CategoryViewController.swift in Sources */,
 				04867697257CA86A00EAAB2E /* SettingViewController.swift in Sources */,
 				0403EFB625B0702000302D33 /* NoteEventTableViewCell.swift in Sources */,
 				0471A48225C6A8CD00687571 /* BaseViewController.swift in Sources */,
+				04D2790025F35E2400EC692F /* LoginTextfield.swift in Sources */,
 				04C35E7E2590D0AB0028BF75 /* AddNoteEventViewController.swift in Sources */,
+				04D2791825F360C900EC692F /* RegisterViewController.swift in Sources */,
 				04DCF72625B827A300C4D237 /* PagerViewViewController.swift in Sources */,
 				04C35E8125930B010028BF75 /* AddBudgetEventViewController.swift in Sources */,
 				04848EFE257699F300F2695B /* AppDelegate.swift in Sources */,
+				04D2794925F37C7D00EC692F /* FirebaseManager.swift in Sources */,
 				047ABB2F25BEDE5A0063BFEB /* BudgetTableViewCell.swift in Sources */,
 				0476170125C01F030049EF7C /* CategoryTableViewCell.swift in Sources */,
 				04C35E852595B10B0028BF75 /* RepeatViewController.swift in Sources */,

@@ -26,6 +26,8 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     //repeat
     private var repeatTitleLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .hex("454545")
+        label.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.5))
         return label
     }()
     //date picker
@@ -57,6 +59,9 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         descriptionInputTextField.returnKeyType = .done
         descriptionInputTextField.backgroundColor = .clear
         descriptionInputTextField.placeholder = "Enter text here"
+        descriptionInputTextField.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.3))
+        descriptionInputTextField.textColor = .hex("454545")
+        descriptionInputTextField.tintColor = .hex("667e95")
         return descriptionInputTextField
     }()
     
@@ -78,6 +83,7 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         let endDateTime = userDateFormatter.date(from: "2024-Dec-01 18:00")
         userDatePicker.maximumDate = endDateTime
         userDatePicker.addTarget(self, action: #selector(userDatePickerValueChanged), for: .valueChanged)
+        userDatePicker.tintColor = .hex("454545")
         return userDatePicker
     }()
     
@@ -100,7 +106,7 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     init(repeatTitle: String, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.repeatTitleLabel.text = repeatTitle
+//        self.repeatTitleLabel.text = repeatTitle
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -113,7 +119,7 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func config(type: AddNoteEventTableViewCellType) {
+    public func config(type: AddNoteEventTableViewCellType, title: String = "Never") {
         self.slotView.subviews.forEach { (view) in
             view.removeFromSuperview()
         }
@@ -139,7 +145,7 @@ class AddNoteEventTableViewCell: UITableViewCell, UITextFieldDelegate {
             
             self.accessoryType = .disclosureIndicator
             
-            self.repeatTitleLabel.text = "Never"
+            self.repeatTitleLabel.text = title
             
             self.slotView.addSubview(self.repeatTitleLabel)
             self.repeatTitleLabel.snp.makeConstraints { (make) in

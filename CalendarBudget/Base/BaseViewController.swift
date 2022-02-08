@@ -12,6 +12,8 @@ class BaseViewController: UIViewController {
 
     var isEnableTapEndEditing: Bool = false
     
+    public var loadingIndicator = LoadingIndicator()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

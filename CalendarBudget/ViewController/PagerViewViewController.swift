@@ -7,39 +7,39 @@
 //
 import UIKit
 import FSPagerView
+import Firebase
 
-class PagerViewViewController: UIViewController {
+class PagerViewViewController: BaseViewController {
     var executeClosure: ((Int)->())?
     lazy var pagerView: FSPagerView = {
         let pagerView = FSPagerView()
         pagerView.dataSource = self
         pagerView.delegate = self
-        pagerView.isInfinite = false
-        pagerView.register(FSPagerViewCell.self, forCellWithReuseIdentifier: "Cell")
+        pagerView.isInfinite = true
+        pagerView.register(ItemPagerViewCell.self, forCellWithReuseIdentifier: "ItemPagerViewCell")
         pagerView.transformer = FSPagerViewTransformer(type: .ferrisWheel)
         return pagerView
     }()
-    fileprivate var numberOfItems = 2
-    fileprivate let imageNames = ["noteIcon","budgetIcon"]
+    fileprivate var numberOfItems = 3
+    fileprivate let imageNames = ["noteIcon", "budgetIcon", "logout"]
     lazy var pageControl: FSPageControl = {
         let pageControl = FSPageControl()
         pageControl.numberOfPages = imageNames.count
         pageControl.contentHorizontalAlignment = .right
         pageControl.contentInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        pageControl.currentPage = 1
+        pageControl.currentPage = 0
+        pageControl.setFillColor(.hex("667e95"), for: .selected)
+        pageControl.setFillColor(.hex("e1e5e8"), for: .normal)
         return pageControl
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(pagerView)
         view.addSubview(pageControl)
-        
-        
     }
-    
-
-
 }
+
 extension PagerViewViewController: FSPagerViewDelegate,FSPagerViewDataSource{
     //MARK:- FSPagerView Datasource
     func numberOfItems(in pagerView: FSPagerView) -> Int {
@@ -47,48 +47,45 @@ extension PagerViewViewController: FSPagerViewDelegate,FSPagerViewDataSource{
     }
     
     func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
-        let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "Cell", at: index)
-        cell.imageView?.image = UIImage(named: self.imageNames[index])
-        cell.imageView?.backgroundColor = .clear
-        cell.imageView?.contentMode = .scaleAspectFill
-        cell.imageView?.clipsToBounds = true
-        if index == 0{
-            cell.textLabel?.text = "Note"
-        }else if index == 1{
-            cell.textLabel?.text = "Budget"
-        }
-        cell.textLabel?.textColor = .black
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 30)
-        cell.textLabel?.backgroundColor = .clear
-        cell.textLabel?.superview?.backgroundColor = .clear
-        cell.imageView?.snp.makeConstraints({ (make) in
-            make.center.equalToSuperview()
-            make.height.width.equalTo(80)
-        })
-        cell.textLabel?.snp.makeConstraints({ (make) in
-            make.centerX.equalToSuperview()
-            
-        })
-
         
+        var title: String
+        if index == 0 {
+            title = "Note"
+        } else if index == 1 {
+            title = "Budget"
+        } else { title = "Logout" }
+        
+        guard let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "ItemPagerViewCell", at: index) as? ItemPagerViewCell else {
+            let cell = ItemPagerViewCell()
+            cell.config(imageName: self.imageNames[index], title: title)
+            return cell
+        }
+        cell.config(imageName: self.imageNames[index], title: title)
         return cell
     }
     // MARK:- FSPagerView Delegate
     func pagerView(_ pagerView: FSPagerView, willDisplay cell: FSPagerViewCell, forItemAt index: Int) {
-        
-        pageControl.currentPage = index
-      
-        
-
+//        pageControl.currentPage = index
     }
     
     func pagerView(_ pagerView: FSPagerView, shouldSelectItemAt index: Int) -> Bool {
+        if index == 2 {
+            do {
+                try Auth.auth().signOut()
+                
+                let vc = LoginViewController()
+                let nav = UINavigationController(rootViewController: vc)
+                UIApplication.shared.keyWindow?.rootViewController = nav
+                
+            } catch let logoutError {
+                self.showErrorAlert(error: logoutError, myErrorMsg: nil)
+            }
+        }
         return false
     }
     
-   
-    
     func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
+        print("will end:\(targetIndex)")
         pageControl.currentPage = targetIndex
         if let closure = self.executeClosure {
             closure(targetIndex)
@@ -96,11 +93,4 @@ extension PagerViewViewController: FSPagerViewDelegate,FSPagerViewDataSource{
         let mainVC = MainViewController()
         mainVC.budgetTableView.reloadData()
     }
-    
-    
-    func pagerViewDidEndScrollAnimation(_ pagerView: FSPagerView) {
-        pageControl.currentPage = pagerView.currentIndex
-    }
-    
-    
 }

@@ -28,6 +28,8 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     private lazy var categoryTitleLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .hex("454545")
+        label.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.5))
         return label
     }()
     
@@ -37,6 +39,9 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         textField.clearButtonMode = .whileEditing
         textField.returnKeyType = .done
         textField.placeholder = "Add something"
+        textField.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.3))
+        textField.textColor = .hex("454545")
+        textField.tintColor = .hex("667e95")
         return textField
     }()
     
@@ -47,6 +52,9 @@ class AddBudgetEventTableViewCell: UITableViewCell, UITextFieldDelegate {
         textField.returnKeyType = .done
         textField.keyboardType = .numberPad
         textField.placeholder = "0"
+        textField.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.3))
+        textField.textColor = .hex("454545")
+        textField.tintColor = .hex("667e95")
         return textField
     }()
     

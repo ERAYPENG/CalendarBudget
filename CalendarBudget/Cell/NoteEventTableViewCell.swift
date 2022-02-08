@@ -52,14 +52,14 @@ extension NoteEventTableViewCell {
         self.titleLabel.textColor = .darkText
         self.timeLabel.textColor = .darkGray
         let separateLine = UIView()
-        separateLine.backgroundColor = .black
+        separateLine.backgroundColor = .hex("454545")
         self.contentView.addSubview(separateLine)
         
         separateLine.snp.makeConstraints { (make) in
             make.bottom.equalToSuperview()
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview()
-            make.height.equalTo(0.8)
+            make.height.equalTo(1)
         }
         
     }

@@ -15,3 +15,4 @@ public var budgetTitles = ["Food",
                             "Entertainment"]
 
 public var userinputBudgetValue: String = ""
+public var userRemainCostPerMonth: Int = 0

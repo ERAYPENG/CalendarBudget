@@ -16,6 +16,8 @@ class CategoryTableViewCell: UITableViewCell {
     }()
     private var categoryLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .hex("454545")
+        label.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.5))
         return label
     }()
     

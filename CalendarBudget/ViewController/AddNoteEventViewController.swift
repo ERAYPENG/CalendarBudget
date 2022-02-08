@@ -71,6 +71,7 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
 
     private var repeatValueFromRepeatViewController = "Never"
     var repeatViewControllerRowNumber: Int?
+    
     func repeatViewControllerUserIndexRow(row: Int) {
         repeatViewControllerRowNumber = row
     }
@@ -84,6 +85,8 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
     func repeatViewControllerDidSelectRow(title: String) {
         
         repeatValueFromRepeatViewController = title
+        
+        self.addNoteEventTableView.reloadData()
     }
     
     lazy var userDatePickerTextField: UITextField = {
@@ -118,33 +121,22 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
         finishButton.backgroundColor = .groupTableViewBackground
         finishButton.setTitle("Cancel", for: .normal)
         finishButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        finishButton.setTitleColor(.systemBlue, for: .normal)
+        finishButton.setTitleColor(.hex("667e95"), for: .normal)
         finishButton.addTarget(self, action: #selector(noteDismiss), for: .touchUpInside)
         
         let saveButton = UIButton()
-        saveButton.backgroundColor = .gray
+        saveButton.backgroundColor = .hex("667e95")
         saveButton.setTitle("Save", for: .normal)
-        saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+        saveButton.titleLabel?.font = UIFont(name: "Futura", size: 18)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.layer.cornerRadius = 20
-        saveButton.layer.borderColor = UIColor.lightGray.cgColor
+        saveButton.layer.borderColor = UIColor.hex("d5dde6").cgColor
         saveButton.layer.borderWidth = 5.0
         saveButton.addTarget(self, action: #selector(saveEvent), for: .touchUpInside)
 //        userDatePickerTextField.inputView = self.userDatePicker
         view.addSubview(finishButton)
         view.addSubview(addNoteEventTableView)
         view.addSubview(saveButton)
-        
-        
-        
-
-        
-        
-        
-        
-
-        
-        
         
         
 //MARK:- AutoLayout
@@ -169,31 +161,29 @@ class AddNoteEventViewController: UIViewController, RepeatViewControllerDelegate
             make.height.equalTo(60)
         }
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        let repeatRowIndexPath = NSIndexPath(row: 0, section: 2)
-        if let cell = addNoteEventTableView.cellForRow(at: repeatRowIndexPath as IndexPath) {
-            if repeatValueFromRepeatViewController == "Never" {
-                cell.textLabel?.text = "Never"
-            } else {
-                cell.textLabel?.text = repeatValueFromRepeatViewController
-                
-            }
-            
-        }
+        
+//        let repeatRowIndexPath = NSIndexPath(row: 0, section: 2)
+//
+//        if let cell = addNoteEventTableView.cellForRow(at: repeatRowIndexPath as IndexPath) {
+//            if repeatValueFromRepeatViewController == "Never" {
+//                cell.textLabel?.text = "Never"
+//            } else {
+//                cell.textLabel?.text = repeatValueFromRepeatViewController
+//            }
+//        }
 
         print("add note view appear")
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         navigationController?.setNavigationBarHidden(false, animated: animated)
         print("add note view disappear")
     }
-    
-
-    
-
 }
 //MARK:- UITableView
 extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
@@ -238,7 +228,7 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
 
 
         } else if indexPath.section == 2 {
-            cell.config(type: AddNoteEventTableViewCellType.repeatValue)
+            cell.config(type: AddNoteEventTableViewCellType.repeatValue, title: repeatValueFromRepeatViewController)
         }
 
         return cell
@@ -263,7 +253,8 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let noteHeaderLabel = UILabel()
-        noteHeaderLabel.font = UIFont.systemFont(ofSize: 30)
+        noteHeaderLabel.font = UIFont(name: "Menlo-Bold", size: 20)
+        noteHeaderLabel.textColor = .hex("454545")
         noteHeaderLabel.text = self.tableView(addNoteEventTableView, titleForHeaderInSection: section)
         
         let noteHeaderView = UIView()
@@ -271,15 +262,11 @@ extension AddNoteEventViewController:UITableViewDataSource, UITableViewDelegate{
         noteHeaderView.addSubview(noteHeaderLabel)
         noteHeaderLabel.snp.makeConstraints { (make) in
             make.leading.equalTo(noteHeaderView).offset(20)
-            make.height.equalTo(noteHeaderView)
-            
+            make.top.equalTo(noteHeaderView).inset(8)
+            make.bottom.equalTo(noteHeaderView).inset(4)
         }
         return noteHeaderView
     }
-    
-    
-    
-    
 }
 
 //MARK:- Events

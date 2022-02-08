@@ -66,29 +66,30 @@ class MainViewController: UIViewController {
         return budgetTableView
     }()
     
-    let addButtonView = UIImage(named: "addButton")
+    let addImage = UIImage(named: "addButton")
     lazy var addNoteButton: UIButton = {
         let addNoteButton = UIButton()
-        addNoteButton.setImage(addButtonView, for: .normal)
+        addNoteButton.setImage(addImage, for: .normal)
         addNoteButton.addTarget(self, action: #selector(addNoteEvent), for: .touchUpInside)
         return addNoteButton
     }()
     
     lazy var addBudgetButton: UIButton = {
         let addBudgetButton = UIButton()
-        addBudgetButton.setImage(addButtonView, for: .normal)
+        addBudgetButton.setImage(addImage, for: .normal)
         addBudgetButton.addTarget(self, action: #selector(addBudgetEvent), for: .touchUpInside)
         return addBudgetButton
     }()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("calendar vc will appear")
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("calendar vc did load")
+        
         
         self.calendarVC.executeClosureFromCalendarVC = { (str) in
             self.addBudgetEventDate = str
@@ -97,7 +98,7 @@ class MainViewController: UIViewController {
         
         self.setupUI()
 
-        fillBlankView.backgroundColor = UIColor(red: 246/255, green: 216/255, blue: 23/255, alpha: 1)
+        fillBlankView.backgroundColor = .hex("cbc0a5")
         view.addSubview(fillBlankView)
         
         let yellowBlock = UIView()
@@ -160,24 +161,23 @@ class MainViewController: UIViewController {
             make.width.equalToSuperview()
         }
         pagerView.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalToSuperview()
-            make.height.equalTo(180)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+            make.height.equalTo(100)
         }
         pageControl.snp.makeConstraints { (make) in
             make.width.equalTo(80)
             make.height.equalTo(30)
-            make.bottom.equalTo(pagerView.snp.bottom).offset(0)
+            make.centerY.equalTo(pagerView.snp.bottom).offset(0)
             make.centerX.equalTo(pagerView)
         }
         addNoteButton.snp.makeConstraints { (make) in
-            make.top.equalTo(calendarVC.view.snp.bottom).offset(-10)
+            make.top.equalTo(calendarVC.view.snp.bottom).offset(-2)
             make.centerX.equalToSuperview()
-            make.width.height.equalTo(60)
+            make.width.height.equalTo(50)
         }
         addBudgetButton.snp.makeConstraints { (make) in
-            make.top.equalTo(calendarVC.view.snp.bottom).offset(-10)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(60)
+            make.edges.equalTo(addNoteButton)
         }
 
         noteTableView.snp.makeConstraints { (make) in
@@ -317,15 +317,15 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
                 cell.textLabel?.text = "Add something..."
                 cell.textLabel?.textColor = .lightGray
                 cell.backgroundColor = .groupTableViewBackground
-                
+
                 let separatorLine = UIView()
-                separatorLine.backgroundColor = UIColor.hex("005073")
+                separatorLine.backgroundColor = UIColor.hex("667e95")
                 cell.contentView.addSubview(separatorLine)
                 separatorLine.snp.makeConstraints { (make) in
                     make.bottom.equalToSuperview()
                     make.leading.equalToSuperview().offset(16)
                     make.trailing.equalToSuperview().offset(0)
-                    make.height.equalTo(1)
+                    make.height.equalTo(1.2)
                 }
                 
                 return cell
@@ -352,13 +352,13 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate{
                 cell.backgroundColor = .groupTableViewBackground
                 
                 let separatorLine = UIView()
-                separatorLine.backgroundColor = UIColor.hex("005073")
+                separatorLine.backgroundColor = UIColor.hex("667e95")
                 cell.contentView.addSubview(separatorLine)
                 separatorLine.snp.makeConstraints { (make) in
                     make.bottom.equalToSuperview()
                     make.leading.equalToSuperview().offset(16)
                     make.trailing.equalToSuperview().offset(0)
-                    make.height.equalTo(1)
+                    make.height.equalTo(1.2)
                 }
                 
                 return cell

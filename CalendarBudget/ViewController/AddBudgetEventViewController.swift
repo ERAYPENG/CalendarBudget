@@ -145,7 +145,8 @@ extension AddBudgetEventViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let budgetHeaderLabel = UILabel()
-        budgetHeaderLabel.font = UIFont.systemFont(ofSize: 30)
+        budgetHeaderLabel.font = UIFont(name: "Menlo-Bold", size: 20)
+        budgetHeaderLabel.textColor = .hex("454545")
         budgetHeaderLabel.text = self.tableView(addBudgetEventTableView, titleForHeaderInSection: section)
         
         let budgetHeaderView = UIView()
@@ -153,8 +154,8 @@ extension AddBudgetEventViewController: UITableViewDataSource, UITableViewDelega
         budgetHeaderView.addSubview(budgetHeaderLabel)
         budgetHeaderLabel.snp.makeConstraints { (make) in
             make.leading.equalTo(budgetHeaderView).offset(20)
-            make.height.equalTo(budgetHeaderView)
-            
+            make.top.equalTo(budgetHeaderView).inset(8)
+            make.bottom.equalTo(budgetHeaderView).inset(4)
         }
         return budgetHeaderView
     }

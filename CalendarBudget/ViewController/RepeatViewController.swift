@@ -65,6 +65,8 @@ extension RepeatViewController: UITableViewDataSource,UITableViewDelegate  {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "repeatCell", for: indexPath)
         cell.textLabel?.text = repeatRowTitle[indexPath.row]
+        cell.textLabel?.textColor = .hex("454545")
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight(rawValue: 0.5))
         if userSelectIndex == nil {
             if indexPath.row == 0 {
                 cell.accessoryType = .checkmark
